@@ -1,0 +1,141 @@
+<section
+  class="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3 p-4 md:gap-6 md:p-8 xl:p-10"
+>
+  <header class="grid gap-1.5">
+    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500 md:hidden">
+      Step 5 di 5
+    </p>
+    <h2 class="text-2xl font-semibold tracking-[-0.04em] text-slate-950 md:text-3xl">Pagamento</h2>
+    <p class="max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
+      Scegli il metodo preferito per completare l'ordine.
+    </p>
+  </header>
+
+  <div
+    class="grid min-h-0 gap-4 md:overflow-visible xl:grid-cols-[380px_minmax(0,1fr)] xl:items-start xl:gap-6"
+  >
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
+      <button
+        class="min-h-[88px] rounded-[24px] border p-4 text-left transition"
+        type="button"
+        [class.border-[#635bff]]="paymentMethod() === 'stripe'"
+        [class.bg-[#f6f7ff]]="paymentMethod() === 'stripe'"
+        [class.border-slate-200]="paymentMethod() !== 'stripe'"
+        [class.bg-white]="paymentMethod() !== 'stripe'"
+        (click)="setPaymentMethod('stripe')"
+      >
+        <div class="flex h-full items-start justify-between gap-3">
+          <div>
+            <p class="text-base font-semibold text-slate-950">Stripe</p>
+            <p class="mt-1 text-sm text-slate-500">Carta, Apple Pay, Google Pay</p>
+          </div>
+          <span
+            class="rounded-full bg-[#635bff] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white"
+          >
+            Secure
+          </span>
+        </div>
+      </button>
+
+      <button
+        class="min-h-[88px] rounded-[24px] border p-4 text-left transition"
+        type="button"
+        [class.border-[#0070e0]]="paymentMethod() === 'paypal'"
+        [class.bg-[#f4f9ff]]="paymentMethod() === 'paypal'"
+        [class.border-slate-200]="paymentMethod() !== 'paypal'"
+        [class.bg-white]="paymentMethod() !== 'paypal'"
+        (click)="setPaymentMethod('paypal')"
+      >
+        <div class="flex h-full items-start justify-between gap-3">
+          <div>
+            <p class="text-base font-semibold text-slate-950">PayPal</p>
+            <p class="mt-1 text-sm text-slate-500">Login rapido e conferma esterna</p>
+          </div>
+          <span
+            class="rounded-full bg-[#ffc439] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#003087]"
+          >
+            Fast
+          </span>
+        </div>
+      </button>
+    </div>
+
+    @if (paymentMethod() === 'stripe') {
+      <div
+        class="min-h-[238px] rounded-[24px] border border-[#dfe3ff] bg-[#f8f9ff] p-4 xl:min-h-[320px] xl:p-5"
+      >
+        <div class="flex items-center justify-between gap-3">
+          <strong class="text-slate-950">Pagamento con Stripe</strong>
+          <span class="text-xs font-medium uppercase tracking-[0.16em] text-[#635bff]">Carta</span>
+        </div>
+
+        <div class="mt-4 flex min-h-[178px] flex-col gap-3 xl:min-h-[246px]">
+          <button
+            class="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#635bff] px-4 text-sm font-semibold text-white"
+            type="button"
+          >
+            Paga con Stripe
+          </button>
+
+          <div
+            class="rounded-2xl border border-[#e4e8ff] bg-white px-4 py-3 text-sm tracking-[0.18em] text-slate-900"
+          >
+            4242 4242 4242 4242
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <div
+              class="rounded-2xl border border-[#e4e8ff] bg-white px-4 py-3 text-sm text-slate-500"
+            >
+              MM / YY
+            </div>
+            <div
+              class="rounded-2xl border border-[#e4e8ff] bg-white px-4 py-3 text-sm text-slate-500"
+            >
+              CVC
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="min-h-[238px] rounded-[24px] border border-[#d7e7ff] bg-[#f7fbff] p-4 xl:min-h-[320px] xl:p-5"
+      >
+        <div class="flex items-center justify-between gap-3">
+          <strong class="text-slate-950">Pagamento con PayPal</strong>
+          <span class="text-xs font-medium uppercase tracking-[0.16em] text-[#0070e0]"
+            >Express</span
+          >
+        </div>
+
+        <div class="mt-4 flex min-h-[178px] flex-col gap-3 xl:min-h-[246px]">
+          <button
+            class="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#ffc439] px-4 text-sm font-semibold text-[#003087]"
+            type="button"
+          >
+            Checkout con PayPal
+          </button>
+
+          <div
+            class="rounded-2xl border border-[#d7e7ff] bg-white px-4 py-3 text-sm text-slate-500"
+          >
+            Accesso al conto PayPal
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <div
+              class="rounded-2xl border border-[#d7e7ff] bg-white px-4 py-3 text-sm text-slate-500"
+            >
+              Login sicuro
+            </div>
+            <div
+              class="rounded-2xl border border-[#d7e7ff] bg-white px-4 py-3 text-sm text-slate-500"
+            >
+              Conferma ordine
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

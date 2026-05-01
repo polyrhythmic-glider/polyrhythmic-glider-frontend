@@ -1,0 +1,109 @@
+<form
+  class="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-2.5 p-4 md:gap-6 md:p-8 xl:p-10"
+  [formGroup]="form"
+>
+  <header class="grid gap-1.5">
+    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500 md:hidden">
+      Step 3 di 5
+    </p>
+    <h2 class="text-2xl font-semibold tracking-[-0.04em] text-slate-950 md:text-3xl">Consegna</h2>
+    <p class="hidden max-w-2xl text-sm leading-6 text-slate-600 md:block md:text-base">
+      Compila l'indirizzo per la spedizione tramite corriere.
+    </p>
+  </header>
+
+  <div class="grid min-h-0 gap-2 md:gap-4 xl:max-w-[980px]">
+    <div
+      class="rounded-[18px] border border-slate-200 bg-slate-50 px-3 py-2 md:rounded-[24px] md:px-5 md:py-4"
+    >
+      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+        Metodo di spedizione
+      </p>
+      <p class="mt-1 text-sm font-semibold text-slate-950 md:text-base">Corriere</p>
+      <p class="mt-0.5 text-[0.78rem] text-slate-500 md:mt-1 md:text-sm">
+        Consegna standard 48/72 ore
+      </p>
+    </div>
+
+    <div class="grid gap-1.5 md:grid-cols-2 md:gap-4">
+      <label class="field-shell md:col-span-2">
+        <span class="field-label !text-slate-500">Indirizzo</span>
+        <input
+          class="field-input !min-h-9 !bg-slate-50 !px-3 !py-1.5 !text-sm !text-slate-900 placeholder:!text-slate-400 md:!min-h-11 md:!px-4 md:!py-2.5 md:!text-base"
+          [class.!border-rose-400]="isControlInvalid('addressLine1')"
+          [class.!border-slate-200]="!isControlInvalid('addressLine1')"
+          type="text"
+          formControlName="addressLine1"
+          placeholder="Via Roma 10"
+        />
+        @if (isControlInvalid('addressLine1')) {
+          <span class="mt-1 text-xs font-medium text-rose-600">Inserisci l'indirizzo</span>
+        }
+      </label>
+
+      <label class="field-shell md:col-span-2">
+        <span class="field-label !text-slate-500">Interno / Azienda</span>
+        <input
+          class="field-input !min-h-9 !border-slate-200 !bg-slate-50 !px-3 !py-1.5 !text-sm !text-slate-900 placeholder:!text-slate-400 md:!min-h-11 md:!px-4 md:!py-2.5 md:!text-base"
+          type="text"
+          formControlName="addressLine2"
+          placeholder="Scala B, piano 2"
+        />
+      </label>
+
+      <label class="field-shell">
+        <span class="field-label !text-slate-500">Citta</span>
+        <input
+          class="field-input !min-h-9 !bg-slate-50 !px-3 !py-1.5 !text-sm !text-slate-900 placeholder:!text-slate-400 md:!min-h-11 md:!px-4 md:!py-2.5 md:!text-base"
+          [class.!border-rose-400]="isControlInvalid('city')"
+          [class.!border-slate-200]="!isControlInvalid('city')"
+          type="text"
+          formControlName="city"
+          placeholder="Milano"
+        />
+        @if (isControlInvalid('city')) {
+          <span class="mt-1 text-xs font-medium text-rose-600">Inserisci la citta</span>
+        }
+      </label>
+
+      <label class="field-shell">
+        <span class="field-label !text-slate-500">CAP</span>
+        <input
+          class="field-input !min-h-9 !bg-slate-50 !px-3 !py-1.5 !text-sm !text-slate-900 placeholder:!text-slate-400 md:!min-h-11 md:!px-4 md:!py-2.5 md:!text-base"
+          [class.!border-rose-400]="isControlInvalid('postalCode')"
+          [class.!border-slate-200]="!isControlInvalid('postalCode')"
+          type="text"
+          formControlName="postalCode"
+          placeholder="20100"
+        />
+        @if (isControlInvalid('postalCode')) {
+          <span class="mt-1 text-xs font-medium text-rose-600">Inserisci il CAP</span>
+        }
+      </label>
+
+      <label class="field-shell md:col-span-2">
+        <span class="field-label !text-slate-500">Paese</span>
+        <input
+          class="field-input !min-h-9 !bg-slate-50 !px-3 !py-1.5 !text-sm !text-slate-900 placeholder:!text-slate-400 md:!min-h-11 md:!px-4 md:!py-2.5 md:!text-base"
+          [class.!border-rose-400]="isControlInvalid('country')"
+          [class.!border-slate-200]="!isControlInvalid('country')"
+          type="text"
+          formControlName="country"
+        />
+        @if (isControlInvalid('country')) {
+          <span class="mt-1 text-xs font-medium text-rose-600">Inserisci il paese</span>
+        }
+      </label>
+
+      <label class="field-shell md:col-span-2">
+        <span class="field-label !text-slate-500">Note consegna</span>
+        <textarea
+          class="field-input min-h-[44px] resize-none !border-slate-200 !bg-slate-50 !px-3 !py-1.5 !text-sm !text-slate-900 placeholder:!text-slate-400 md:min-h-[72px] md:!px-4 md:!py-2.5 md:!text-base"
+          formControlName="deliveryNotes"
+          rows="1"
+          placeholder="Citofono, fascia oraria, istruzioni per il corriere"
+        ></textarea>
+      </label>
+    </div>
+  </div>
+</form>

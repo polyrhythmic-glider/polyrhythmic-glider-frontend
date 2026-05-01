@@ -1,0 +1,70 @@
+<form
+  class="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3 p-4 md:gap-6 md:p-8 xl:p-10"
+  [formGroup]="form"
+>
+  <header class="grid gap-1.5">
+    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500 md:hidden">
+      Step 2 di 5
+    </p>
+    <h2 class="text-2xl font-semibold tracking-[-0.04em] text-slate-950 md:text-3xl">
+      Dati personali
+    </h2>
+    <p class="max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
+      Inserisci solo le informazioni essenziali per completare l’ordine.
+    </p>
+  </header>
+
+  <div class="min-h-0">
+    <div class="grid gap-2.5 md:grid-cols-2 md:gap-4 xl:max-w-[920px]">
+      <label class="field-shell">
+        <span class="field-label !text-slate-500">Nome e cognome</span>
+        <input
+          class="field-input !min-h-11 !bg-slate-50 !px-4 !py-2.5 !text-slate-900 placeholder:!text-slate-400"
+          [class.!border-rose-400]="isControlInvalid('fullName')"
+          [class.!border-slate-200]="!isControlInvalid('fullName')"
+          type="text"
+          formControlName="fullName"
+          placeholder="Mario Rossi"
+        />
+        @if (isControlInvalid('fullName')) {
+          <span class="mt-1 text-xs font-medium text-rose-600">Inserisci nome e cognome</span>
+        }
+      </label>
+
+      <label class="field-shell">
+        <span class="field-label !text-slate-500">Email</span>
+        <input
+          class="field-input !min-h-11 !bg-slate-50 !px-4 !py-2.5 !text-slate-900 placeholder:!text-slate-400"
+          [class.!border-rose-400]="isControlInvalid('email')"
+          [class.!border-slate-200]="!isControlInvalid('email')"
+          type="email"
+          formControlName="email"
+          placeholder="mario@email.it"
+        />
+        @if (isControlInvalid('email')) {
+          <span class="mt-1 text-xs font-medium text-rose-600">Inserisci un'email valida</span>
+        }
+      </label>
+
+      <label class="field-shell">
+        <span class="field-label !text-slate-500">Telefono</span>
+        <input
+          class="field-input !min-h-11 !border-slate-200 !bg-slate-50 !px-4 !py-2.5 !text-slate-900 placeholder:!text-slate-400"
+          type="tel"
+          formControlName="phone"
+          placeholder="+39 333 0000000"
+        />
+      </label>
+
+      <label class="field-shell">
+        <span class="field-label !text-slate-500">Destinatario (opzionale)</span>
+        <input
+          class="field-input !min-h-11 !border-slate-200 !bg-slate-50 !px-4 !py-2.5 !text-slate-900 placeholder:!text-slate-400"
+          type="text"
+          formControlName="recipientName"
+          placeholder="Se diverso da chi acquista"
+        />
+      </label>
+    </div>
+  </div>
+</form>

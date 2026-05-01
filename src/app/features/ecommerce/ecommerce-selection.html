@@ -1,0 +1,94 @@
+<section
+  class="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-2.5 p-4 md:gap-6 md:p-8 xl:p-10"
+>
+  @if (selectedVariant(); as variant) {
+    <header class="grid gap-1.5">
+      <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500 md:hidden">
+        Step 1 di 5
+      </p>
+      <h2 class="text-[1.95rem] font-semibold tracking-[-0.04em] text-slate-950 md:text-3xl">
+        Scegli il vinile
+      </h2>
+      <p class="max-w-2xl text-[0.92rem] leading-6 text-slate-600 md:text-base">
+        Scegli una o più varianti e imposta quante copie vuoi aggiungere al carrello.
+      </p>
+    </header>
+
+    <div class="min-h-0">
+      <div class="grid gap-2.5 md:h-full md:grid-cols-3 md:gap-4 xl:gap-5">
+        @for (item of variants; track item.id) {
+          <article
+            class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-3 rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-slate-900 md:flex md:min-h-[260px] md:flex-col md:justify-between md:gap-0 md:rounded-[24px] md:p-5 xl:min-h-[280px]"
+          >
+            <div class="block p-0.5 md:self-start" aria-hidden="true">
+              <span
+                class="block h-5 w-5 rounded-full md:h-5 md:w-5"
+                [style.background]="
+                  'linear-gradient(135deg, ' + item.discStart + ', ' + item.discEnd + ')'
+                "
+              ></span>
+            </div>
+
+            <div class="min-w-0 self-start md:mt-5 md:w-full">
+              <div class="w-full text-left">
+                <p
+                  class="line-clamp-2 text-[0.95rem] font-semibold leading-5 md:min-h-12 md:text-[1.05rem] md:leading-6"
+                >
+                  {{ item.name }}
+                </p>
+                <p class="mt-0.5 truncate text-[0.82rem] text-slate-500 md:mt-1.5 md:text-sm">
+                  {{ item.edition }}
+                </p>
+              </div>
+
+              <p class="mt-1.5 text-[0.78rem] font-medium text-slate-500 md:mt-4 md:text-sm">
+                {{ item.stockLabel }}
+              </p>
+            </div>
+
+            <div class="self-start text-right md:mt-3 md:w-full md:text-left">
+              <p class="text-[0.95rem] font-semibold tracking-[-0.03em] md:text-[1.15rem]">
+                {{ formatPrice(item.priceCents) }}
+              </p>
+              <div class="mt-2 flex items-center justify-end gap-2 md:mt-4 md:justify-between">
+                <div
+                  class="inline-grid grid-cols-3 overflow-hidden rounded-full border border-slate-200"
+                >
+                  <button
+                    class="h-8 w-8 bg-slate-100 text-[0.92rem] text-slate-700"
+                    type="button"
+                    (click)="decrement(item.id)"
+                    [attr.aria-label]="'Rimuovi una copia di ' + item.name"
+                  >
+                    -
+                  </button>
+                  <span
+                    class="inline-flex h-8 w-8 items-center justify-center text-[0.92rem] font-medium text-slate-900"
+                  >
+                    {{ quantityFor(item.id) }}
+                  </span>
+                  <button
+                    class="h-8 w-8 bg-slate-100 text-[0.92rem] text-slate-700"
+                    type="button"
+                    (click)="increment(item.id)"
+                    [attr.aria-label]="'Aggiungi una copia di ' + item.name"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button
+                  class="hidden rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white md:inline-flex"
+                  type="button"
+                  (click)="increment(item.id)"
+                >
+                  Aggiungi
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  }
+</section>

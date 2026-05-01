@@ -1,0 +1,98 @@
+<section
+  class="flex h-full min-h-0 flex-col gap-3 bg-[#f5f7fb] p-3 text-slate-900 md:gap-5 md:p-6 xl:px-8"
+>
+  <div class="grid min-h-0 flex-1 gap-3 md:mx-auto md:w-full md:max-w-[1360px] md:gap-5">
+    <main
+      class="min-h-0 overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]"
+    >
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <section
+    class="rounded-[28px] border border-slate-200 bg-white px-4 py-3 shadow-[0_18px_50px_rgba(15,23,42,0.08)] md:mx-auto md:w-full md:max-w-[1360px] md:px-6 md:py-4"
+    aria-label="Riepilogo carrello"
+  >
+    <div class="flex items-center justify-between gap-3 lg:gap-6">
+      <div class="flex min-w-0 items-center gap-3">
+        <div class="flex shrink-0 items-center">
+          @for (entry of cartEntries().slice(0, 3); track entry.variant.id; let index = $index) {
+            <div
+              class="vinyl-disc h-12 w-12 shrink-0 border-2 border-white"
+              [class.-ml-3]="index > 0"
+              [style.--record-start]="entry.variant.discStart"
+              [style.--record-end]="entry.variant.discEnd"
+              [style.z-index]="10 - index"
+              aria-hidden="true"
+            >
+              <div class="vinyl-disc__core"></div>
+            </div>
+          } @empty {
+            <div
+              class="vinyl-disc h-12 w-12 shrink-0 opacity-35"
+              style="--record-start: #cbd5e1; --record-end: #94a3b8"
+              aria-hidden="true"
+            >
+              <div class="vinyl-disc__core"></div>
+            </div>
+          }
+        </div>
+
+        <div class="min-w-0">
+          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Carrello
+          </p>
+          <p class="mt-1 text-sm text-slate-600">
+            {{ cartCount() }} {{ cartCount() === 1 ? 'articolo' : 'articoli' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-[#f7f9ff] px-3 py-2 md:min-w-[160px] md:px-4">
+        <p class="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">Totale</p>
+        <p class="mt-1 text-base font-semibold tracking-[-0.03em] text-slate-950">
+          {{ formatPrice(totalCents()) }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="mt-3 flex items-center justify-between gap-3 border-t border-slate-200 pt-3 md:pt-4"
+    >
+      @if (showSecondaryButton()) {
+        <button
+          class="rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900"
+          type="button"
+          (click)="secondaryAction()"
+        >
+          {{ secondaryLabel() }}
+        </button>
+      } @else {
+        <span></span>
+      }
+
+      @if (showContinueButton()) {
+        <div class="flex flex-col items-end gap-1">
+          <button
+            class="rounded-full px-4 py-2.5 text-sm font-semibold text-white"
+            type="button"
+            [disabled]="!canContinueFromFooter()"
+            [class.bg-[#142c8e]]="canContinueFromFooter()"
+            [class.bg-slate-300]="!canContinueFromFooter()"
+            [class.cursor-pointer]="canContinueFromFooter()"
+            [class.cursor-not-allowed]="!canContinueFromFooter()"
+            (click)="continueFromFooter()"
+          >
+            {{ continueLabel() }}
+          </button>
+
+          @if (continueHint()) {
+            <p class="text-[0.72rem] font-medium text-amber-700">
+              {{ continueHint() }}
+            </p>
+          }
+        </div>
+      }
+    </div>
+  </section>
+</section>
