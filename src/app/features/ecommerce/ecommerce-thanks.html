@@ -1,0 +1,45 @@
+<section
+  class="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-3 p-4 md:gap-6 md:p-8 xl:p-10"
+>
+  <header class="grid gap-1.5">
+    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-slate-500 md:hidden">
+      Step 5 di 5
+    </p>
+    <h2 class="text-2xl font-semibold tracking-[-0.04em] text-slate-950 md:text-3xl">
+      Ordine simulato confermato
+    </h2>
+    <p class="max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
+      Grazie, abbiamo ricevuto la tua richiesta e preparato il riepilogo finale.
+    </p>
+  </header>
+
+  <div class="min-h-0">
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4 xl:gap-4">
+      <div class="rounded-[24px] bg-slate-50 p-4">
+        <p class="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">Destinatario</p>
+        <p class="mt-1 text-sm font-semibold text-slate-950">
+          {{ form.controls.recipientName.value || form.controls.fullName.value || 'Non impostato' }}
+        </p>
+      </div>
+
+      <div class="rounded-[24px] bg-slate-50 p-4">
+        <p class="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">Email</p>
+        <p class="mt-1 text-sm font-semibold text-slate-950">
+          {{ form.controls.email.value || 'Non impostata' }}
+        </p>
+      </div>
+
+      <div class="rounded-[24px] bg-slate-50 p-4">
+        <p class="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">Consegna</p>
+        <p class="mt-1 text-sm font-semibold text-slate-950">Corriere</p>
+      </div>
+
+      <div class="rounded-[24px] bg-slate-50 p-4">
+        <p class="text-[0.68rem] uppercase tracking-[0.16em] text-slate-500">Pagamento</p>
+        <p class="mt-1 text-sm font-semibold text-slate-950">
+          {{ paymentMethod() === 'stripe' ? 'Stripe' : 'PayPal' }}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

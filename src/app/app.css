@@ -27,11 +27,25 @@
   max-width: 36rem;
 }
 
+.app-shell.is-ecommerce-shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
 .main-content.shop-main-content {
   width: 100%;
   max-width: none;
   margin: 0;
   padding-inline: clamp(0.75rem, 1.6vw, 1.5rem);
+}
+
+.main-content.ecommerce-main-content {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: 0;
+  padding-inline: 0;
 }
 
 .main-content.links-main-content {

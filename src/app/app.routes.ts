@@ -239,6 +239,55 @@ export const routes: Routes = [
     },
   },
   {
+    path: 'ecommerce',
+    pathMatch: 'full',
+    redirectTo: 'ecommerce/selezione',
+  },
+  {
+    path: 'ecommerce',
+    loadComponent: () => import('./features/ecommerce/ecommerce').then((m) => m.Ecommerce),
+    children: [
+      {
+        path: 'selezione',
+        loadComponent: () =>
+          import('./features/ecommerce/ecommerce-selection').then((m) => m.EcommerceSelection),
+      },
+      {
+        path: 'dati-personali',
+        loadComponent: () =>
+          import('./features/ecommerce/ecommerce-personal').then((m) => m.EcommercePersonal),
+      },
+      {
+        path: 'consegna',
+        loadComponent: () =>
+          import('./features/ecommerce/ecommerce-delivery').then((m) => m.EcommerceDelivery),
+      },
+      {
+        path: 'riepilogo',
+        loadComponent: () =>
+          import('./features/ecommerce/ecommerce-summary-page').then((m) => m.EcommerceSummaryPage),
+      },
+      {
+        path: 'pagamento',
+        loadComponent: () =>
+          import('./features/ecommerce/ecommerce-payment').then((m) => m.EcommercePayment),
+      },
+      {
+        path: 'grazie',
+        loadComponent: () =>
+          import('./features/ecommerce/ecommerce-thanks').then((m) => m.EcommerceThanks),
+      },
+    ],
+    data: {
+      seo: {
+        title: 'Ecommerce | Checkout mockup',
+        description:
+          'Checkout mockup single-product con varianti vinile, dati personali, consegna e pagamento simulato.',
+        keywords: ['ecommerce', 'vinyl', 'single product', 'limited edition', 'checkout mockup'],
+      },
+    },
+  },
+  {
     path: 'cookie-policy',
     loadComponent: () =>
       import('./features/cookie-policy/cookie-policy').then((m) => m.CookiePolicy),
