@@ -37,7 +37,7 @@ export class Links {
       id: 'byos',
       label: 'Evento BYOS',
       href: '/partecipa',
-      note: 'Se vuoi iscriverti alla jam, qui trovi tutte le info',
+      note: 'BYOS! 2.0 · 4 novembre 2026 al MUGA · Iscriviti alla jam audio o video',
     },
     {
       id: 'instagram',
