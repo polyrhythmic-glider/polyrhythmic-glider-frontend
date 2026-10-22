@@ -202,9 +202,9 @@ export const routes: Routes = [
       import('./features/participation/participation').then((m) => m.Participation),
     data: {
       seo: {
-        title: 'Partecipa | BYOS! 2.0 · 4 novembre 2026 · MUGA',
+        title: 'Partecipa | BYOS! 0.2 · 4 novembre 2026 · MUGA',
         description:
-          'Iscriviti a BYOS! 2.0 del 4 novembre 2026 al MUGA di Ferrara: scegli la jam audio o video, leggi il regolamento e registra il tuo setup.',
+          'Iscriviti a BYOS! 0.2 del 4 novembre 2026 al MUGA di Ferrara: scegli la jam audio o video, leggi il regolamento e registra il tuo setup.',
         keywords: ['byos', 'synth jam', 'video jam', 'partecipazione', 'polyrhythmic glider'],
       },
     },

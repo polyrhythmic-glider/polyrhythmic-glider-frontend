@@ -14,12 +14,10 @@
   min-height: 100%;
   padding: 1.4rem 1.35rem 1.35rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-top-color: var(--manifesto-accent, rgba(157, 231, 255, 0.45));
   border-radius: var(--card-radius);
   background: var(--surface);
   box-shadow: none;
   backdrop-filter: none;
-  container-type: inline-size;
 }
 
 .manifesto-card::before {
@@ -30,49 +28,10 @@
   content: none;
 }
 
-.manifesto-card.is-cyan {
-  --manifesto-accent: rgba(157, 231, 255, 0.52);
-}
-
-.manifesto-card.is-lime {
-  --manifesto-accent: rgba(182, 255, 105, 0.48);
-}
-
-.manifesto-card.is-amber {
-  --manifesto-accent: rgba(255, 210, 92, 0.48);
-}
-
-.manifesto-card-header {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.manifesto-card-index {
-  font-family: Bahnschrift, Aptos, 'Segoe UI', sans-serif;
-  font-size: clamp(2rem, 13cqi, 2.8rem);
-  line-height: 0.9;
-  font-weight: 700;
-  letter-spacing: -0.05em;
-  color: rgba(247, 247, 251, 0.18);
-}
-
-.manifesto-card-eyebrow {
-  margin-top: 0.2rem;
-  text-align: right;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.72rem;
-  color: rgba(247, 247, 251, 0.5);
-}
-
 .manifesto-card-title {
   position: relative;
   z-index: 1;
-  margin: 0.9rem 0 0;
+  margin: 0;
   font-size: 1.35rem;
   line-height: 1.1;
   font-weight: 600;

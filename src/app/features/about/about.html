@@ -13,20 +13,7 @@
     </div>
     <div class="manifesto-grid">
       @for (card of manifestoCards; track card.title) {
-        <article
-          class="manifesto-card"
-          [class.is-cyan]="$index % 3 === 0"
-          [class.is-lime]="$index % 3 === 1"
-          [class.is-amber]="$index % 3 === 2"
-        >
-          <div class="manifesto-card-header">
-            <div class="manifesto-card-index">
-              {{ ($index + 1).toString().padStart(2, '0') }}
-            </div>
-            @if (card.eyebrow) {
-              <div class="manifesto-card-eyebrow">{{ card.eyebrow }}</div>
-            }
-          </div>
+        <article class="manifesto-card">
           <h3 class="manifesto-card-title">{{ card.title }}</h3>
           <p class="manifesto-card-description">{{ card.description }}</p>
         </article>

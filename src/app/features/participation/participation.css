@@ -3,24 +3,23 @@
   position: relative;
   --participation-text: #f3f6fb;
   --participation-muted: #b9c5d5;
-  --participation-border: #64748b;
-  --participation-surface: rgba(255, 255, 255, 0.05);
+  --participation-accent: #38bdf8;
+  --participation-accent-strong: #0ea5e9;
+  --participation-border: rgba(56, 189, 248, 0.46);
+  --participation-surface: rgba(56, 189, 248, 0.07);
 }
 
 .participation-page {
   display: grid;
-  gap: 36px;
-  padding: 32px 0 56px;
+  gap: 24px;
+  min-height: calc(100svh - 120px);
+  padding: 20px 0 36px;
 }
 
 .participation-hero {
   display: grid;
-  gap: 24px;
-  align-items: start;
-}
-
-.participation-copy {
-  min-width: 0;
+  min-height: min(30svh, 16rem);
+  place-items: center;
 }
 
 .participation-intro {
@@ -28,7 +27,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   padding: 1.8rem;
   container-type: inline-size;
 }
@@ -48,63 +50,86 @@
 .participation-title {
   position: relative;
   z-index: 1;
-  margin: 1rem 0 0;
+  margin: 0;
   display: block;
-  max-width: 10ch;
+  text-align: center;
   line-height: 0.88;
   letter-spacing: -0.06em;
 }
 
-.participation-date-line,
 .participation-byos-line {
   display: block;
-  font-size: clamp(3.4rem, 17cqi, 6.8rem);
+  font-size: clamp(4.5rem, 25cqi, 9rem);
   white-space: nowrap;
   overflow-wrap: normal;
   word-break: normal;
   text-wrap: nowrap;
+  color: #7dd3fc;
+  text-shadow: 0 0 28px rgba(56, 189, 248, 0.34);
+  animation: hero-line-shift 2.8s steps(2) infinite 260ms both;
 }
 
-.participation-date-line {
-  font-size: clamp(2.6rem, 12cqi, 4.8rem);
+.participation-byos-line::before,
+.participation-byos-line::after {
+  color: rgba(56, 189, 248, 0.72);
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.44);
 }
 
-.participation-title-divider {
-  display: block;
-  width: min(100%, 8.5rem);
-  height: 2px;
-  margin: 0.85rem 0 1rem;
-  border-radius: 999px;
-  background: rgba(157, 231, 255, 0.72);
-  opacity: 0.9;
+.participation-byos-line::before {
+  animation:
+    hero-title-glitch-cyan 1.55s steps(2) infinite 520ms both,
+    hero-title-flicker 480ms steps(2) infinite 920ms both;
 }
 
-.participation-date-line {
-  color: #f7f7fb;
-  text-shadow:
-    -0.04em 0 0 rgba(255, 92, 163, 0.2),
-    0.04em 0 0 rgba(157, 231, 255, 0.2),
-    0 0 22px rgba(182, 255, 105, 0.06);
+.participation-byos-line::after {
+  animation:
+    hero-title-glitch-lime 1.95s steps(2) infinite 620ms reverse both,
+    hero-title-flicker 560ms steps(2) infinite 1s reverse both;
 }
 
-.participation-title-tagline {
-  display: block;
-  margin-top: 0.7rem;
-  white-space: nowrap;
-  font-size: clamp(1.08rem, 3.4cqi, 1.34rem);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(247, 247, 251, 0.78);
-}
-
-.participation-title-subtitle {
-  display: block;
-  margin-top: 0.35rem;
-  white-space: nowrap;
-  font-size: clamp(0.82rem, 2.6cqi, 0.98rem);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.participation-location {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 0.6rem;
+  margin-top: 1rem;
   color: var(--participation-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.participation-location:hover {
+  color: #bae6fd;
+}
+
+.participation-location small {
+  color: rgba(186, 230, 253, 0.7);
+  font-family: Consolas, monospace;
+  font-size: 0.75rem;
+}
+
+.participation-event-summary,
+.participation-event-facts {
+  margin: 0;
+  text-align: center;
+}
+
+.participation-event-summary {
+  max-width: 52ch;
+  margin-top: 0.8rem;
+  color: var(--participation-text);
+  font-size: clamp(0.95rem, 1.4vw, 1.2rem);
+  line-height: 1.5;
+}
+
+.participation-event-facts {
+  margin-top: 0.35rem;
+  color: var(--participation-muted);
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .participation-description {
@@ -307,7 +332,7 @@
   left: 0;
   padding: 12px 18px;
   color: #090b12;
-  background: #d9ff8e;
+  background: #bae6fd;
   border-radius: 8px;
   transform: translateY(-200%);
 }
@@ -333,52 +358,6 @@
   letter-spacing: -0.035em;
 }
 
-.participation-form-heading > p:last-child {
-  margin: 0;
-  color: var(--participation-muted);
-  font-size: 1.05rem;
-  line-height: 1.7;
-}
-
-.participation-progress {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 24px 0;
-  padding: 0;
-  list-style: none;
-}
-
-.participation-progress li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0.8rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.035);
-  color: var(--participation-muted);
-  font-size: 0.92rem;
-  line-height: 1.45;
-}
-
-.participation-progress li > span {
-  font-family: Consolas, monospace;
-  font-size: 0.8rem;
-}
-
-.participation-progress .is-current {
-  color: #d9ff8e;
-  border-color: rgba(182, 255, 105, 0.32);
-  background: rgba(182, 255, 105, 0.1);
-  font-weight: 700;
-}
-
-.participation-progress .is-complete {
-  color: var(--participation-text);
-  border-color: rgba(157, 231, 255, 0.4);
-}
-
 .participation-form,
 .participation-fields,
 .participation-details,
@@ -402,27 +381,6 @@
   font-size: 1.35rem;
   font-weight: 600;
   line-height: 1.5;
-}
-
-.participation-step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(157, 231, 255, 0.4);
-  border-radius: 999px;
-  color: #9de7ff;
-  background: rgba(255, 255, 255, 0.06);
-  font:
-    0.8rem Consolas,
-    monospace;
-}
-
-legend .participation-step-number {
-  margin-right: 12px;
-  vertical-align: middle;
 }
 
 .participation-choice-grid,
@@ -453,7 +411,7 @@ legend .participation-step-number {
   width: 22px;
   height: 22px;
   margin: 0;
-  accent-color: #b6ff69;
+  accent-color: var(--participation-accent-strong);
 }
 
 .participation-choice-label {
@@ -485,17 +443,17 @@ legend .participation-step-number {
 }
 
 .participation-choice:hover {
-  border-color: rgba(182, 255, 105, 0.32);
-  background: rgba(182, 255, 105, 0.14);
+  border-color: rgba(56, 189, 248, 0.52);
+  background: rgba(56, 189, 248, 0.12);
 }
 
 .participation-choice.is-selected {
-  border-color: #b6ff69;
-  background: rgba(182, 255, 105, 0.14);
+  border-color: var(--participation-accent);
+  background: rgba(56, 189, 248, 0.16);
 }
 
 .participation-choice.is-selected .participation-choice-state {
-  color: #d9ff8e;
+  color: #bae6fd;
 }
 
 .participation-choice:focus-within {
@@ -505,9 +463,9 @@ legend .participation-step-number {
 
 .participation-rules,
 .participation-details {
-  margin-top: 8px;
-  padding-top: 30px;
-  border-top: 1px solid var(--participation-border);
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .participation-section-heading {
@@ -530,67 +488,6 @@ legend .participation-step-number {
   line-height: 1.4;
 }
 
-.participation-rules-list {
-  margin: 24px 0;
-  padding-left: 26px;
-  list-style: decimal;
-}
-
-.participation-rules-list li {
-  padding: 18px 0 18px 12px;
-  border-bottom: 1px solid #394454;
-}
-
-.participation-rules-list li::marker {
-  color: #b9c5d5;
-  font-weight: 600;
-}
-
-.participation-rules-list h3 {
-  margin: 0 0 8px;
-  color: var(--participation-text);
-  font-size: 1.12rem;
-  line-height: 1.5;
-}
-
-.participation-rules-list p {
-  max-width: 66ch;
-  margin: 0;
-  color: #d4dde9;
-  font-size: 1.04rem;
-  line-height: 1.85;
-}
-
-.participation-rules-answer {
-  display: grid;
-  gap: 12px;
-  padding: 1rem 1rem 1.05rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 22px;
-  background: var(--participation-surface);
-}
-
-.participation-rules-answer h3 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.participation-rules-answer p {
-  margin: 0;
-  color: var(--participation-muted);
-  line-height: 1.65;
-}
-
-.participation-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.participation-actions {
-  margin-top: 6px;
-}
-
 .participation-form-shell .button-primary,
 .participation-form-shell .button-secondary {
   min-height: 48px;
@@ -608,7 +505,16 @@ legend .participation-step-number {
 }
 
 .participation-form-shell .button-primary[aria-pressed='true'] {
-  background: #d9ff8e;
+  background: #bae6fd;
+}
+
+.participation-form-shell .button-primary {
+  color: #061923;
+  background: var(--participation-accent);
+}
+
+.participation-form-shell .button-primary:hover {
+  background: #7dd3fc;
 }
 
 .participation-form-shell .field-shell {
@@ -625,7 +531,7 @@ legend .participation-step-number {
 }
 
 .participation-form-shell .field-label > span[aria-hidden] {
-  color: #d9ff8e;
+  color: var(--participation-accent);
 }
 
 .participation-optional {
@@ -696,7 +602,7 @@ legend .participation-step-number {
   width: 22px;
   height: 22px;
   margin-top: 3px;
-  accent-color: #b6ff69;
+  accent-color: var(--participation-accent-strong);
 }
 
 .participation-submit-row {
@@ -740,29 +646,9 @@ legend .participation-step-number {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  color: #d9ff8e;
-  background: #27391f;
+  color: #bae6fd;
+  background: #123047;
   font-size: 1.8rem;
-}
-
-.participation-interlude {
-  display: grid;
-  justify-items: start;
-  gap: 20px;
-}
-
-.participation-interlude[hidden] {
-  display: none;
-}
-
-.participation-interlude-video {
-  width: 100%;
-  max-width: 640px;
-  aspect-ratio: 16 / 9;
-  border: 0;
-  border-radius: 22px;
-  object-fit: contain;
-  background: #000;
 }
 
 .participation-intro > .participation-field-note {
@@ -831,49 +717,13 @@ legend .participation-step-number {
   padding: 1.15rem;
 }
 
-.participation-date-line {
-  font-size: clamp(2rem, 12cqi, 4rem);
-}
-
 .participation-byos-line {
-  font-size: clamp(2.75rem, 17cqi, 4.5rem);
-}
-
-.participation-title {
-  max-width: none;
-}
-
-.participation-title-tagline,
-.participation-title-subtitle {
-  white-space: normal;
-  letter-spacing: 0.1em;
-}
-
-.participation-title-tagline {
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.participation-title-subtitle {
-  font-size: 0.8rem;
-  line-height: 1.6;
+  font-size: clamp(4rem, 24cqi, 6rem);
 }
 
 .participation-description {
   font-size: 1rem;
   line-height: 1.8;
-}
-
-.participation-progress {
-  gap: 10px;
-}
-
-.participation-progress li {
-  display: grid;
-  align-content: start;
-  gap: 6px;
-  padding: 0.8rem;
-  font-size: 0.82rem;
 }
 
 .participation-consent {
@@ -899,32 +749,10 @@ legend .participation-step-number {
     padding: 1.8rem;
   }
 
-  .participation-date-line {
-    font-size: clamp(2.6rem, 12cqi, 4.8rem);
-  }
-
   .participation-byos-line {
-    font-size: clamp(3.4rem, 17cqi, 6.8rem);
+    font-size: clamp(5rem, 20cqi, 9rem);
   }
 
-  .participation-title-tagline {
-    font-size: clamp(1.08rem, 3.4cqi, 1.34rem);
-  }
-
-  .participation-title-subtitle {
-    font-size: clamp(0.82rem, 2.6cqi, 0.98rem);
-  }
-
-  .participation-progress li {
-    display: flex;
-    gap: 10px;
-    padding: 0.8rem 1rem;
-    font-size: 0.92rem;
-  }
-
-  .participation-actions .button-primary,
-  .participation-actions .button-secondary,
-  .participation-interlude .button-secondary,
   .participation-submit-row .button-primary {
     width: auto;
   }
@@ -960,12 +788,466 @@ legend .participation-step-number {
   .participation-choice.is-selected {
     border: 3px solid Highlight;
   }
+}
 
-  .participation-step-number {
-    border-color: ButtonText;
+:host {
+  height: calc(100dvh - 76px);
+  overflow: hidden;
+}
+
+.participation-page {
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: minmax(8rem, 0.8fr) minmax(0, 1fr);
+  gap: clamp(0.5rem, 1.5vh, 1rem);
+  padding: clamp(0.5rem, 1.5vh, 1rem) 0;
+  overflow: hidden;
+}
+
+.participation-hero {
+  min-height: 0;
+}
+
+.participation-event-kicker {
+  font-size: clamp(0.7rem, 1vw, 0.85rem);
+}
+
+.participation-event-summary,
+.participation-event-facts {
+  display: none;
+}
+
+.participation-intro {
+  padding: clamp(0.7rem, 2vh, 1.25rem);
+}
+
+.participation-byos-line {
+  font-size: clamp(3.8rem, 21cqi, 8rem);
+}
+
+.participation-location {
+  margin-top: clamp(0.35rem, 1vh, 0.75rem);
+  font-size: clamp(0.75rem, 2.6cqi, 1rem);
+}
+
+.participation-location small {
+  font-size: 0.7em;
+}
+
+.participation-form-shell {
+  align-self: start;
+  display: grid;
+  grid-template-rows: auto auto;
+  min-height: 0;
+  padding: clamp(0.7rem, 2vh, 1.25rem);
+  overflow: hidden;
+}
+
+.participation-form-heading {
+  gap: 0.45rem;
+}
+
+.participation-form-heading h2 {
+  font-size: clamp(1.05rem, 3.8vw, 1.35rem);
+}
+
+.participation-roadmap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  color: var(--participation-muted);
+  font-size: 0.7rem;
+  list-style: none;
+}
+
+.participation-roadmap li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.participation-roadmap li::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.participation-roadmap li:not(:last-child)::after {
+  content: '';
+  width: clamp(0.6rem, 3vw, 1.4rem);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.participation-roadmap .is-current {
+  color: #bae6fd;
+}
+
+.participation-roadmap .is-current::before {
+  border-color: var(--participation-accent);
+  background: var(--participation-accent);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.75);
+}
+
+.participation-form,
+.participation-fields,
+.participation-details,
+.participation-feedback {
+  min-height: 0;
+  gap: clamp(0.5rem, 1.4vh, 0.9rem);
+}
+
+.participation-form {
+  height: auto;
+  margin-top: clamp(0.35rem, 1vh, 0.6rem);
+  overflow: hidden;
+}
+
+.participation-fields {
+  height: auto;
+  align-content: center;
+}
+
+.participation-rules {
+  display: grid;
+  align-content: center;
+  gap: clamp(0.65rem, 2vh, 1.15rem);
+}
+
+.participation-jam-options > legend {
+  margin-bottom: clamp(0.5rem, 1.5vh, 0.9rem);
+  font-size: clamp(1rem, 3.5vw, 1.2rem);
+}
+
+.participation-choice-grid,
+.participation-input-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.participation-choice {
+  gap: 0.2rem 0.5rem;
+  padding: clamp(0.55rem, 1.6vh, 0.8rem);
+  border-radius: 12px;
+}
+
+.participation-choice input,
+.participation-consent input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.participation-choice-label {
+  font-size: clamp(0.85rem, 3vw, 1rem);
+}
+
+.participation-choice-hint,
+.participation-choice-state {
+  font-size: clamp(0.66rem, 2.3vw, 0.78rem);
+  line-height: 1.35;
+}
+
+.participation-section-heading > div {
+  gap: 0.15rem;
+}
+
+.participation-kicker {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+}
+
+.participation-rules h2,
+.participation-details h2,
+.participation-feedback h2 {
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
+  line-height: 1.15;
+}
+
+.participation-rules-carousel {
+  display: grid;
+  min-height: clamp(8rem, 28vh, 18rem);
+  padding-block: clamp(0.25rem, 1vh, 0.55rem);
+}
+
+.participation-rule-card {
+  display: grid;
+  align-content: center;
+  margin: 0;
+  height: 100%;
+  min-height: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(56, 189, 248, 0.26);
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.06);
+}
+
+.participation-rule-counter {
+  margin: 0 0 0.35rem;
+  color: #7dd3fc;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.participation-rule-card h3 {
+  margin-bottom: 0.35rem;
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  line-height: 1.25;
+}
+
+.participation-rule-card p {
+  font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+  line-height: 1.4;
+}
+
+.participation-rule-navigation {
+  display: flex;
+  margin-top: 0.2rem;
+}
+
+.participation-rule-navigation .button-primary {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .participation-event-summary,
+  .participation-event-facts {
+    display: block;
   }
 
-  .participation-progress .is-current {
-    border-color: Highlight;
+  .participation-intro {
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
+  }
+}
+
+.participation-field-note,
+.participation-submit-row p {
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.participation-form-shell .button-primary,
+.participation-form-shell .button-secondary {
+  min-height: 2.2rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.participation-form-shell .field-shell {
+  gap: 0.25rem;
+}
+
+.participation-form-shell .field-label {
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.participation-form-shell .field-input {
+  min-height: 2.2rem;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.participation-textarea {
+  min-height: 2.8rem !important;
+}
+
+.participation-optional,
+.participation-form-shell .field-error {
+  font-size: 0.66rem;
+}
+
+.participation-consent {
+  gap: 0.5rem;
+  min-height: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.participation-submit-row {
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.participation-submit-row .participation-submit-title {
+  font-size: 0.85rem;
+}
+
+.participation-error,
+.participation-error-summary {
+  padding: 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.participation-form-heading h2 {
+  font-size: clamp(1.35rem, 5vw, 2.4rem);
+}
+
+.participation-roadmap {
+  font-size: clamp(0.8rem, 2.7vw, 1rem);
+}
+
+.participation-choice-grid,
+.participation-input-grid {
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+
+.participation-jam-options > legend {
+  font-size: clamp(1.15rem, 4vw, 1.5rem);
+}
+
+.participation-choice {
+  padding: 0.75rem 0.85rem;
+}
+
+.participation-choice-label {
+  font-size: 1.08rem;
+}
+
+.participation-choice-hint,
+.participation-choice-state {
+  font-size: 0.82rem;
+}
+
+.participation-rules h2,
+.participation-details h2,
+.participation-feedback h2 {
+  font-size: clamp(1.3rem, 4.5vw, 2rem);
+}
+
+.participation-section-heading {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.participation-change-jam {
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  color: var(--participation-muted);
+  background: transparent;
+  font: inherit;
+  font-size: clamp(0.78rem, 2.4vw, 0.95rem);
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+  cursor: pointer;
+}
+
+.participation-change-jam:hover {
+  color: #bae6fd;
+}
+
+.participation-rules-carousel {
+  min-height: clamp(10rem, 24vh, 15rem);
+}
+
+.participation-rule-card {
+  padding: 1rem;
+}
+
+.participation-rule-counter {
+  font-size: 0.78rem;
+}
+
+.participation-rule-card h3 {
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+}
+
+.participation-rule-card p,
+.participation-field-note,
+.participation-submit-row p {
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  line-height: 1.45;
+}
+
+.participation-form-shell .button-primary,
+.participation-form-shell .button-secondary {
+  min-height: 2.8rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+.participation-form-shell .field-label {
+  font-size: 0.9rem;
+}
+
+.participation-form-shell .field-input {
+  min-height: 2.8rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.95rem;
+}
+
+.participation-textarea {
+  min-height: 4rem !important;
+}
+
+.participation-consent {
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.participation-details-next {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .participation-choice-grid,
+  .participation-input-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .participation-choice {
+    padding: 1.1rem;
+  }
+
+  .participation-choice-label {
+    font-size: 1.35rem;
+  }
+
+  .participation-choice-hint,
+  .participation-choice-state {
+    font-size: 0.95rem;
+  }
+
+  .participation-rules-carousel {
+    min-height: clamp(12rem, 26vh, 18rem);
+  }
+
+  .participation-rule-card {
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+  }
+
+  .participation-rule-card h3 {
+    font-size: clamp(1.45rem, 2.5vw, 2.2rem);
+  }
+
+  .participation-rule-card p {
+    font-size: clamp(1rem, 1.45vw, 1.2rem);
+  }
+
+  .participation-form-shell .button-primary,
+  .participation-form-shell .button-secondary {
+    min-height: 3.2rem;
+    font-size: 1.05rem;
+  }
+
+  .participation-form-shell .field-label {
+    font-size: 1.05rem;
+  }
+
+  .participation-form-shell .field-input {
+    min-height: 3.2rem;
+    font-size: 1.05rem;
   }
 }

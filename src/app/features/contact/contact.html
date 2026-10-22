@@ -5,12 +5,7 @@
   description="Se vuoi contribuire a questo archivio vivo, aprire un processo condiviso o proporre una collaborazione, qui trovi i canali per entrare nella struttura, attraversarla e lasciare una traccia utile."
 >
   <div class="section-body">
-    <app-contact-form></app-contact-form>
-    <div class="flex flex-wrap gap-3" style="margin-top: 20px">
-      @for (area of areas; track area) {
-        <span class="pill-tag">{{ area | readableKey }}</span>
-      }
-    </div>
+    <app-contact-form class="block"></app-contact-form>
     <div class="grid gap-5 lg:grid-cols-2">
       @for (channel of channels; track channel.value) {
         <a

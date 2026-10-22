@@ -8,7 +8,6 @@ import {
   computed,
   inject,
   signal,
-  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -31,7 +30,6 @@ interface JamOption {
 })
 export class Participation {
   readonly formName = 'byos-2-participation-2026-11-04';
-  readonly eventDateLabel = '04.11.2026';
   readonly jamOptions: readonly JamOption[] = [
     {
       value: 'audio',
@@ -93,24 +91,27 @@ export class Participation {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
-  readonly interludeVideo = viewChild<ElementRef<HTMLVideoElement>>('interludeVideo');
   readonly attemptedSubmit = signal(false);
 
   readonly selectedJam = signal<JamType | null>(null);
   readonly rulesChoice = signal<boolean | null>(null);
+  readonly activeRuleIndex = signal(0);
+  readonly detailsStep = signal(1);
   readonly isSubmitting = signal(false);
   readonly submissionStatus = signal<'idle' | 'success' | 'error'>('idle');
   readonly activeJam = computed(() =>
     this.jamOptions.find((option) => option.value === this.selectedJam()),
   );
-  readonly activeStep = computed(() =>
+  readonly wizardStep = computed(() =>
     !this.selectedJam() ? 1 : this.rulesChoice() === true ? 3 : 2,
   );
+  readonly hasReadAllRules = computed(() => {
+    const jam = this.activeJam();
+    return !!jam && this.activeRuleIndex() === jam.rules.length - 1;
+  });
   readonly stepAnnouncement = computed(() => {
     if (this.isSubmitting()) return 'Invio dell’iscrizione in corso.';
     if (this.submissionStatus() === 'success') return 'Iscrizione completata.';
-    if (this.rulesChoice() === false)
-      return 'Usa il pulsante Rileggi il regolamento per continuare con l’iscrizione.';
     if (this.rulesChoice() === true) return 'Regolamento confermato. Completa i tuoi dati.';
     return this.activeJam()
       ? `${this.activeJam()?.label} selezionata. Leggi il regolamento qui sotto.`
@@ -160,9 +161,10 @@ export class Participation {
 
     this.selectedJam.set(jam);
     this.rulesChoice.set(null);
+    this.activeRuleIndex.set(0);
+    this.detailsStep.set(1);
     this.submissionStatus.set('idle');
     this.attemptedSubmit.set(false);
-    this.stopInterlude();
 
     const { instrument, effectDetails, videoEquipment } = this.form.controls;
     for (const control of [instrument, effectDetails, videoEquipment]) {
@@ -178,43 +180,54 @@ export class Participation {
     }
   }
 
-  answerRules(understood: boolean | null): void {
+  resetJam(): void {
     if (this.isSubmitting()) {
       return;
     }
 
-    this.rulesChoice.set(understood);
+    this.selectedJam.set(null);
+    this.rulesChoice.set(null);
+    this.activeRuleIndex.set(0);
+    this.detailsStep.set(1);
     this.submissionStatus.set('idle');
-    if (understood === false) {
-      const video = this.interludeVideo()?.nativeElement;
-      if (video) {
-        video.currentTime = 0;
-        void video.play().catch(() => {});
-      }
-    } else {
-      this.stopInterlude();
+    this.attemptedSubmit.set(false);
+  }
+
+  answerRules(): void {
+    if (this.isSubmitting() || !this.hasReadAllRules()) {
+      return;
     }
-    this.focusAfterRender(
-      understood === true
-        ? '#details-title'
-        : understood === false
-          ? '#participation-reread-rules'
-          : '#rules-title',
-    );
+
+    this.rulesChoice.set(true);
+    this.detailsStep.set(1);
+    this.submissionStatus.set('idle');
+  }
+
+  nextRule(): void {
+    const ruleCount = this.activeJam()?.rules.length ?? 0;
+    if (!ruleCount) {
+      return;
+    }
+    this.activeRuleIndex.update((index) => Math.min(ruleCount - 1, index + 1));
+  }
+
+  nextDetails(): void {
+    const controls =
+      this.detailsStep() === 1
+        ? [this.form.controls.name, this.form.controls.arrivalTime]
+        : this.selectedJam() === 'audio'
+          ? [this.form.controls.instrument]
+          : [];
+    controls.forEach((control) => control.markAsTouched());
+    if (controls.some((control) => control.invalid)) {
+      return;
+    }
+    this.detailsStep.update((step) => Math.min(3, step + 1));
   }
 
   focusField(event: Event, id: string): void {
     event.preventDefault();
     this.host.nativeElement.querySelector<HTMLElement>(`#${id}`)?.focus();
-  }
-
-  private stopInterlude(): void {
-    const video = this.interludeVideo()?.nativeElement;
-    if (!video) return;
-    if (!video.paused) {
-      video.pause();
-    }
-    video.currentTime = 0;
   }
 
   async submit(event: Event): Promise<void> {
@@ -226,6 +239,13 @@ export class Participation {
 
     const jam = this.selectedJam();
     if (!jam || this.rulesChoice() !== true || this.form.invalid) {
+      if (this.form.controls.name.invalid || this.form.controls.arrivalTime.invalid) {
+        this.detailsStep.set(1);
+      } else if (jam === 'audio' && this.form.controls.instrument.invalid) {
+        this.detailsStep.set(2);
+      } else {
+        this.detailsStep.set(3);
+      }
       this.form.markAllAsTouched();
       this.attemptedSubmit.set(true);
       this.focusAfterRender('#participation-errors');
@@ -242,7 +262,7 @@ export class Participation {
     const payload = new URLSearchParams({
       'form-name': this.formName,
       eventDate: '2026-11-04',
-      eventLocation: 'MUGA · Ferrara',
+      eventLocation: 'MUGA · Via Annibale Zucchini 23/A, 44122 Ferrara',
       jamType: jam,
       rulesConfirmed: 'accepted',
       name: this.form.controls.name.value.trim(),

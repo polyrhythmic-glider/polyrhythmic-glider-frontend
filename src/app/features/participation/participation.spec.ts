@@ -8,8 +8,6 @@ describe('Participation', () => {
   let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
 
   beforeEach(async () => {
-    vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
-    vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
     await TestBed.configureTestingModule({ imports: [Participation] }).compileComponents();
     fixture = TestBed.createComponent(Participation);
     component = fixture.componentInstance;
@@ -34,6 +32,13 @@ describe('Participation', () => {
     component.form.patchValue({ name: '  Alex  ', arrivalTime: '19:30', consent: true });
   }
 
+  function confirmRules(): void {
+    while (!component.hasReadAllRules()) {
+      component.nextRule();
+    }
+    component.answerRules();
+  }
+
   function submittedPayload(): URLSearchParams {
     return new URLSearchParams(fetchMock.mock.calls[0][1]?.body?.toString());
   }
@@ -44,16 +49,11 @@ describe('Participation', () => {
     fixture.detectChanges();
     expect(element.textContent).toContain('Regolamento Jam Audio');
     expect(element.querySelector('input[name="name"]')).toBeNull();
-
-    component.answerRules(false);
-    fixture.detectChanges();
-    expect(element.querySelector('video')).not.toBeNull();
-    expect(element.querySelector('button[type="submit"]')).toBeNull();
-
-    component.answerRules(null);
-    fixture.detectChanges();
-    expect(element.querySelector<HTMLElement>('.participation-interlude')?.hidden).toBe(true);
-    component.answerRules(true);
+    component.answerRules();
+    expect(component.rulesChoice()).toBeNull();
+    confirmRules();
+    component.form.patchValue({ name: 'Alex', arrivalTime: '19:30' });
+    component.nextDetails();
     fixture.detectChanges();
     expect(element.querySelector('input[name="instrument"]')).not.toBeNull();
     expect(element.querySelector('textarea[name="videoEquipment"]')).toBeNull();
@@ -61,7 +61,7 @@ describe('Participation', () => {
 
   it('requires fresh confirmation and removes audio data when switching to video', () => {
     component.selectJam('audio');
-    component.answerRules(true);
+    confirmRules();
     fillCommonFields();
     component.form.patchValue({ instrument: 'Synth', effectDetails: 'Delay' });
     expect(component.form.valid).toBe(true);
@@ -75,7 +75,8 @@ describe('Participation', () => {
     expect(component.form.valid).toBe(true);
     expect(element.querySelector('input[name="name"]')).toBeNull();
 
-    component.answerRules(true);
+    confirmRules();
+    component.nextDetails();
     fixture.detectChanges();
     expect(element.querySelector('input[name="instrument"]')).toBeNull();
     expect(element.querySelector('textarea[name="videoEquipment"]')).not.toBeNull();
@@ -83,23 +84,27 @@ describe('Participation', () => {
 
   it('rejects incomplete data and never submits without rules confirmation', async () => {
     component.selectJam('audio');
-    component.answerRules(true);
-    fillCommonFields();
-    component.form.patchValue({ name: '   ', instrument: '   ' });
-    await component.submit(submitEvent());
+    confirmRules();
+    component.nextDetails();
     fixture.detectChanges();
     expect(element.textContent).toContain('Inserisci il tuo nome.');
+
+    component.form.patchValue({ name: 'Alex', arrivalTime: '19:30' });
+    component.nextDetails();
+    component.form.patchValue({ instrument: '   ' });
+    await component.submit(submitEvent());
+    fixture.detectChanges();
     expect(element.textContent).toContain('Indica la macchina o il setup che userai.');
 
-    component.form.patchValue({ name: 'Alex', instrument: 'Synth' });
-    component.answerRules(false);
+    component.form.patchValue({ instrument: 'Synth' });
+    component.rulesChoice.set(null);
     await component.submit(submitEvent());
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it('posts the audio registration to Netlify and shows thanks only after success', async () => {
     component.selectJam('audio');
-    component.answerRules(true);
+    confirmRules();
     fillCommonFields();
     component.form.patchValue({ instrument: ' Synth ', effectDetails: ' Delay ' });
     fixture.detectChanges();
@@ -113,7 +118,7 @@ describe('Participation', () => {
     const payload = submittedPayload();
     expect(payload.get('form-name')).toBe(component.formName);
     expect(payload.get('eventDate')).toBe('2026-11-04');
-    expect(payload.get('eventLocation')).toBe('MUGA · Ferrara');
+    expect(payload.get('eventLocation')).toBe('MUGA · Via Annibale Zucchini 23/A, 44122 Ferrara');
     expect(payload.get('jamType')).toBe('audio');
     expect(payload.get('rulesConfirmed')).toBe('accepted');
     expect(payload.get('name')).toBe('Alex');
@@ -127,7 +132,7 @@ describe('Participation', () => {
 
   it('accepts video participants using the available controllers without audio fields', async () => {
     component.selectJam('video');
-    component.answerRules(true);
+    confirmRules();
     fillCommonFields();
     fixture.detectChanges();
     await component.submit(submitEvent());
@@ -143,7 +148,7 @@ describe('Participation', () => {
   it('preserves the entered video setup on failure so the submission can be retried', async () => {
     fetchMock.mockResolvedValueOnce(new Response('', { status: 500 }));
     component.selectJam('video');
-    component.answerRules(true);
+    confirmRules();
     fillCommonFields();
     component.form.controls.videoEquipment.setValue('Laptop con visual');
     fixture.detectChanges();
@@ -168,7 +173,7 @@ describe('Participation', () => {
       }),
     );
     component.selectJam('video');
-    component.answerRules(true);
+    confirmRules();
     fillCommonFields();
     fixture.detectChanges();
 
@@ -182,7 +187,7 @@ describe('Participation', () => {
     expect(component.isSubmitting()).toBe(false);
   });
 
-  it('uses labelled native radio controls and updates the selected path', () => {
+  it('uses labelled native radio controls', () => {
     const radio = element.querySelector<HTMLInputElement>('#jam-video');
     expect(radio?.type).toBe('radio');
     expect(radio?.name).toBe('jamType');
@@ -192,14 +197,44 @@ describe('Participation', () => {
     radio?.click();
     fixture.detectChanges();
     expect(component.selectedJam()).toBe('video');
-    expect(element.querySelector('[aria-current="step"]')?.textContent).toContain(
-      'Leggi le regole',
+    expect(element.querySelector('#jam-video')).toBeNull();
+    expect(element.querySelector('.participation-progress')).toBeNull();
+  });
+
+  it('updates the wizard roadmap as registration advances', () => {
+    expect(element.querySelector('.participation-roadmap .is-current')?.textContent).toContain(
+      'Jam',
     );
+
+    component.selectJam('audio');
+    fixture.detectChanges();
+    expect(element.querySelector('.participation-roadmap .is-current')?.textContent).toContain(
+      'Regole',
+    );
+
+    confirmRules();
+    fixture.detectChanges();
+    expect(element.querySelector('.participation-roadmap .is-current')?.textContent).toContain(
+      'Dati',
+    );
+  });
+
+  it('returns to the jam choice when requested from the wizard', () => {
+    component.selectJam('audio');
+    fixture.detectChanges();
+    expect(element.querySelector('#jam-audio')).toBeNull();
+
+    component.resetJam();
+    fixture.detectChanges();
+    expect(component.selectedJam()).toBeNull();
+    expect(element.querySelector('#jam-audio')).not.toBeNull();
   });
 
   it('focuses the error summary and lets its links focus the invalid field', async () => {
     component.selectJam('audio');
-    component.answerRules(true);
+    confirmRules();
+    component.form.patchValue({ name: 'Alex', arrivalTime: '19:30' });
+    component.nextDetails();
     fixture.detectChanges();
     await component.submit(submitEvent());
     fixture.detectChanges();
@@ -207,21 +242,23 @@ describe('Participation', () => {
 
     expect(document.activeElement?.id).toBe('participation-errors');
     const summary = element.querySelector('#participation-errors');
-    expect(summary?.querySelectorAll('a').length).toBe(4);
-    summary?.querySelector<HTMLAnchorElement>('a[href="/partecipa#participation-name"]')?.click();
-    expect(document.activeElement?.id).toBe('participation-name');
+    expect(summary?.querySelectorAll('a').length).toBe(2);
+    summary
+      ?.querySelector<HTMLAnchorElement>('a[href="/partecipa#participation-instrument"]')
+      ?.click();
+    expect(document.activeElement?.id).toBe('participation-instrument');
 
-    component.form.controls.name.setValue('Alex');
+    component.form.controls.instrument.setValue('Synth');
     fixture.detectChanges();
-    expect(summary?.querySelector('a[href="/partecipa#participation-name"]')).toBeNull();
+    expect(summary?.querySelector('a[href="/partecipa#participation-instrument"]')).toBeNull();
   });
 
-  it('moves focus to the newly opened details and the final confirmation', async () => {
+  it('does not move focus when opening details and focuses the final confirmation', async () => {
     component.selectJam('video');
-    component.answerRules(true);
+    confirmRules();
     fixture.detectChanges();
     await fixture.whenStable();
-    expect(document.activeElement?.id).toBe('details-title');
+    expect(document.activeElement?.id).not.toBe('details-title');
 
     fillCommonFields();
     await component.submit(submitEvent());
@@ -233,68 +270,20 @@ describe('Participation', () => {
     );
   });
 
-  it('connects field hints and validation messages to their controls', async () => {
+  it('keeps labels and the submit action in their respective data steps', () => {
     component.selectJam('video');
-    component.answerRules(true);
+    confirmRules();
+    fillCommonFields();
+    component.nextDetails();
     fixture.detectChanges();
-    await component.submit(submitEvent());
-    fixture.detectChanges();
-
-    const controls = element.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
-      'input[required], textarea',
-    );
-    for (const control of controls) {
-      expect(element.querySelector(`label[for="${control.id}"]`)).not.toBeNull();
-      for (const id of control.getAttribute('aria-describedby')?.split(' ') ?? []) {
-        expect(element.querySelector(`#${id}`)).not.toBeNull();
-      }
-    }
-    expect(element.querySelector('#participation-name')?.getAttribute('aria-invalid')).toBe('true');
     expect(element.querySelector('label[for="participation-equipment"]')?.textContent).toContain(
       'Facoltativo',
     );
-  });
 
-  it('preloads the interlude and starts it directly when the rules are not understood', () => {
-    const video = element.querySelector('video')!;
-    const interlude = element.querySelector<HTMLElement>('.participation-interlude')!;
-    expect(video.preload).toBe('auto');
-    expect(video.autoplay).toBe(false);
-    expect(interlude.hidden).toBe(true);
-    expect(video.play).not.toHaveBeenCalled();
-
-    component.selectJam('video');
-    component.answerRules(false);
+    component.nextDetails();
     fixture.detectChanges();
-
-    expect(element.querySelector('video')).toBe(video);
-    expect(video.play).toHaveBeenCalledOnce();
-    expect(video.autoplay).toBe(true);
-    expect(video.controls).toBe(false);
-    expect(video.loop).toBe(true);
-    expect(interlude.hidden).toBe(false);
-    expect(interlude.querySelectorAll('button').length).toBe(1);
-    expect(interlude.textContent?.trim()).toBe('Rileggi il regolamento');
-  });
-
-  it('focuses the return button and stops the video when returning to the rules', async () => {
-    component.selectJam('video');
-    component.answerRules(false);
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    const video = element.querySelector('video')!;
-    Object.defineProperty(video, 'paused', { configurable: true, value: false });
-    video.currentTime = 12;
-    expect(document.activeElement?.id).toBe('participation-reread-rules');
-    element.querySelector<HTMLButtonElement>('#participation-reread-rules')?.click();
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(video.pause).toHaveBeenCalledOnce();
-    expect(video.currentTime).toBe(0);
-    expect(video.autoplay).toBe(false);
-    expect(element.querySelector<HTMLElement>('.participation-interlude')?.hidden).toBe(true);
-    expect(document.activeElement?.id).toBe('rules-title');
+    expect(element.querySelector('button[type="submit"]')?.textContent).toContain(
+      'Invia iscrizione',
+    );
   });
 });

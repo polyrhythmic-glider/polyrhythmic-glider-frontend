@@ -2,8 +2,6 @@
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import type { ContactChannel, FeatureCard } from '../../shared/models/content.models';
 
-export const HERO_TAGS = ['shared-process', 'living-archive', 'open-systems', 'sound-research'];
-
 export const HERO_TERMINAL_COMMAND_GROUPS = [
   [
     'ls -lah ./stems',
@@ -127,7 +125,8 @@ export const CONTACT_CHANNELS: ContactChannel[] = [
     label: 'GitHub',
     value: 'github.com/polyrhythmic-glider',
     href: 'https://github.com/polyrhythmic-glider',
-    description: "Codice, configurazioni e tracce leggibili dell'infrastruttura.",
+    description:
+      'Dove puoi trovare alcuni dei nostri esperimenti, compresi quelli che funzionano al primo tentativo.',
     icon: faGithub,
     external: true,
   },
@@ -135,7 +134,8 @@ export const CONTACT_CHANNELS: ContactChannel[] = [
     label: 'Instagram',
     value: '@polyglider',
     href: 'https://instagram.com/polyglider',
-    description: 'Frammenti visivi, aggiornamenti e passaggi emersi dal processo.',
+    description:
+      "Dove puoi trovare i nostri eventi, qualche news e sicuramente un po' di shitposting.",
     icon: faInstagram,
     external: true,
   },

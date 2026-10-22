@@ -51,6 +51,19 @@ describe('App', () => {
     expect(compiled.querySelector('.audio-button')).toBeNull();
   });
 
+  it('should hide background audio controls on the participation route', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await router.navigateByUrl('/partecipa');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.audio-controls')).toBeNull();
+  });
+
   afterAll(() => {
     Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
       configurable: true,

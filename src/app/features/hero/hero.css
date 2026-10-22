@@ -445,6 +445,12 @@ h1 {
   }
 }
 
+@media (max-width: 359px) {
+  .hero-title {
+    font-size: clamp(2rem, 16.5cqi, 3rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-title.is-terminal-closed,
   .hero-title.is-terminal-closed .hero-title-line,

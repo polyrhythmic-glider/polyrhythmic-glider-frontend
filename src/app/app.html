@@ -3,34 +3,38 @@
 } @else if (!isRadioRoute() && !isLinksRoute() && !isEcommerceRoute()) {
   <app-background #bg></app-background>
 
-  <div class="audio-controls" role="group" aria-labelledby="audio-controls-title">
-    <span id="audio-controls-title" class="sr-only"> Controlli audio di sottofondo </span>
+  @if (!isParticipationRoute()) {
+    <div class="audio-controls" role="group" aria-labelledby="audio-controls-title">
+      <span id="audio-controls-title" class="sr-only"> Controlli audio di sottofondo </span>
 
-    <button
-      class="audio-button"
-      type="button"
-      [attr.aria-pressed]="bg.isPlaying"
-      [attr.aria-label]="
-        bg.isPlaying ? 'Metti in pausa l\'audio di sottofondo' : 'Riproduci l\'audio di sottofondo'
-      "
-      (click)="bg.toggleAudio()"
-    >
-      {{ bg.isPlaying ? 'Pause' : 'Play' }}
-    </button>
+      <button
+        class="audio-button"
+        type="button"
+        [attr.aria-pressed]="bg.isPlaying"
+        [attr.aria-label]="
+          bg.isPlaying
+            ? 'Metti in pausa l\'audio di sottofondo'
+            : 'Riproduci l\'audio di sottofondo'
+        "
+        (click)="bg.toggleAudio()"
+      >
+        {{ bg.isPlaying ? 'Pause' : 'Play' }}
+      </button>
 
-    <label class="sr-only" for="global-volume-slider"> Volume audio di sottofondo </label>
-    <input
-      id="global-volume-slider"
-      class="global-volume-slider"
-      type="range"
-      min="0"
-      max="0.2"
-      step="0.005"
-      [value]="bg.volume"
-      [attr.aria-valuetext]="formatVolumeValue(bg.volume)"
-      (input)="setBackgroundVolume($event, bg)"
-    />
-  </div>
+      <label class="sr-only" for="global-volume-slider"> Volume audio di sottofondo </label>
+      <input
+        id="global-volume-slider"
+        class="global-volume-slider"
+        type="range"
+        min="0"
+        max="0.2"
+        step="0.005"
+        [value]="bg.volume"
+        [attr.aria-valuetext]="formatVolumeValue(bg.volume)"
+        (input)="setBackgroundVolume($event, bg)"
+      />
+    </div>
+  }
 }
 
 <div
