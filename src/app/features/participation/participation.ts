@@ -36,7 +36,7 @@ export class Participation {
     {
       value: 'audio',
       label: 'Jam Audio',
-      description: 'Synth, macchine ed effetti. Anche live coding con Strudel.',
+      description: 'Synth, macchine ed effetti. Anche live coding.',
       rules: [
         {
           title: 'Staff e assistenza',
@@ -56,7 +56,7 @@ export class Participation {
         {
           title: 'Live coding',
           description:
-            'In questa edizione sarà presente anche un computer per il live coding con Strudel.',
+            'Ci sarà un computer con Strudel per il live coding. Puoi usare anche altre piattaforme, come TidalCycles o Sonic Pi. Non sappiamo se riusciremo a supportare tutti i setup, ma ci proveremo: parlane con lo staff.',
         },
         {
           title: 'Ascolta e lascia spazio',
@@ -93,16 +93,7 @@ export class Participation {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly motionPreference =
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)')
-      : null;
-
   readonly interludeVideo = viewChild<ElementRef<HTMLVideoElement>>('interludeVideo');
-  readonly prefersReducedMotion = signal(this.motionPreference?.matches ?? false);
-  readonly isVideoPlaying = signal(false);
-  readonly isVideoMuted = signal(false);
-  readonly videoPlaybackError = signal(false);
   readonly attemptedSubmit = signal(false);
 
   readonly selectedJam = signal<JamType | null>(null);
@@ -119,7 +110,7 @@ export class Participation {
     if (this.isSubmitting()) return 'Invio dell’iscrizione in corso.';
     if (this.submissionStatus() === 'success') return 'Iscrizione completata.';
     if (this.rulesChoice() === false)
-      return 'Intermezzo video. Puoi metterlo in pausa o tornare al regolamento.';
+      return 'Usa il pulsante Rileggi il regolamento per continuare con l’iscrizione.';
     if (this.rulesChoice() === true) return 'Regolamento confermato. Completa i tuoi dati.';
     return this.activeJam()
       ? `${this.activeJam()?.label} selezionata. Leggi il regolamento qui sotto.`
@@ -162,18 +153,6 @@ export class Participation {
     ].filter(({ control }) => control.enabled && control.invalid);
   });
 
-  constructor() {
-    const preference = this.motionPreference;
-    if (preference) {
-      const updatePreference = (event: MediaQueryListEvent): void => {
-        this.prefersReducedMotion.set(event.matches);
-        if (event.matches) this.interludeVideo()?.nativeElement.pause();
-      };
-      preference.addEventListener('change', updatePreference);
-      this.destroyRef.onDestroy(() => preference.removeEventListener('change', updatePreference));
-    }
-  }
-
   selectJam(jam: JamType): void {
     if (this.isSubmitting() || this.selectedJam() === jam) {
       return;
@@ -183,6 +162,7 @@ export class Participation {
     this.rulesChoice.set(null);
     this.submissionStatus.set('idle');
     this.attemptedSubmit.set(false);
+    this.stopInterlude();
 
     const { instrument, effectDetails, videoEquipment } = this.form.controls;
     for (const control of [instrument, effectDetails, videoEquipment]) {
@@ -205,14 +185,20 @@ export class Participation {
 
     this.rulesChoice.set(understood);
     this.submissionStatus.set('idle');
-    this.isVideoPlaying.set(false);
-    this.isVideoMuted.set(false);
-    this.videoPlaybackError.set(false);
+    if (understood === false) {
+      const video = this.interludeVideo()?.nativeElement;
+      if (video) {
+        video.currentTime = 0;
+        void video.play().catch(() => {});
+      }
+    } else {
+      this.stopInterlude();
+    }
     this.focusAfterRender(
       understood === true
         ? '#details-title'
         : understood === false
-          ? '#interlude-title'
+          ? '#participation-reread-rules'
           : '#rules-title',
     );
   }
@@ -222,26 +208,13 @@ export class Participation {
     this.host.nativeElement.querySelector<HTMLElement>(`#${id}`)?.focus();
   }
 
-  async toggleVideoPlayback(): Promise<void> {
+  private stopInterlude(): void {
     const video = this.interludeVideo()?.nativeElement;
     if (!video) return;
     if (!video.paused) {
       video.pause();
-      return;
     }
-    try {
-      await video.play();
-      this.videoPlaybackError.set(false);
-    } catch {
-      this.videoPlaybackError.set(true);
-    }
-  }
-
-  toggleVideoAudio(): void {
-    const video = this.interludeVideo()?.nativeElement;
-    if (!video) return;
-    video.muted = !video.muted;
-    this.isVideoMuted.set(video.muted);
+    video.currentTime = 0;
   }
 
   async submit(event: Event): Promise<void> {

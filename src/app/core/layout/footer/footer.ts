@@ -27,7 +27,7 @@ export class Footer {
       path: '/partecipa',
       eyebrow: 'Jam',
       description:
-        'BYOS! 2.0: jam audio e video il 4 novembre 2026 al MUGA. Regolamento e iscrizioni.',
+        'BYOS!: jam audio e video. Scopri il prossimo appuntamento, il regolamento e come partecipare.',
     },
     {
       label: 'Live coding sandbox',

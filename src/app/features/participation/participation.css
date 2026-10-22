@@ -4,7 +4,7 @@
   --participation-text: #f3f6fb;
   --participation-muted: #b9c5d5;
   --participation-border: #64748b;
-  --participation-surface: #171e29;
+  --participation-surface: rgba(255, 255, 255, 0.05);
 }
 
 .participation-page {
@@ -41,6 +41,8 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--participation-muted);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .participation-title {
@@ -298,16 +300,6 @@
   margin: 0;
 }
 
-.participation-byos-line {
-  animation: none;
-  text-shadow: none;
-}
-
-.participation-byos-line::before,
-.participation-byos-line::after {
-  content: none;
-}
-
 .participation-skip-link {
   position: absolute;
   z-index: 20;
@@ -324,25 +316,8 @@
   transform: none;
 }
 
-.participation-side-panel {
-  border-top: 3px solid #b6ff69;
-}
-
-.participation-location {
-  color: var(--participation-text) !important;
-  font-size: 1.15rem;
-}
-
-.participation-side-note {
-  max-width: 30ch;
-  margin: 0;
-  color: var(--participation-muted);
-  line-height: 1.75;
-}
-
 .participation-form-shell {
-  padding: clamp(1.25rem, 4vw, 2.75rem);
-  background: linear-gradient(150deg, #161d29, #12151b 45%);
+  padding: 1.8rem;
 }
 
 .participation-form-heading {
@@ -353,7 +328,7 @@
 
 .participation-form-heading h2 {
   margin: 0;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: 1.6rem;
   line-height: 1.15;
   letter-spacing: -0.035em;
 }
@@ -368,8 +343,8 @@
 .participation-progress {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin: 28px 0 36px;
+  gap: 12px;
+  margin: 24px 0;
   padding: 0;
   list-style: none;
 }
@@ -378,8 +353,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-bottom: 14px;
-  border-bottom: 2px solid #536174;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.035);
   color: var(--participation-muted);
   font-size: 0.92rem;
   line-height: 1.45;
@@ -392,13 +369,14 @@
 
 .participation-progress .is-current {
   color: #d9ff8e;
-  border-color: #b6ff69;
+  border-color: rgba(182, 255, 105, 0.32);
+  background: rgba(182, 255, 105, 0.1);
   font-weight: 700;
 }
 
 .participation-progress .is-complete {
   color: var(--participation-text);
-  border-color: #9de7ff;
+  border-color: rgba(157, 231, 255, 0.4);
 }
 
 .participation-form,
@@ -406,7 +384,7 @@
 .participation-details,
 .participation-feedback {
   display: grid;
-  gap: 28px;
+  gap: 24px;
 }
 
 .participation-fields,
@@ -433,10 +411,10 @@
   flex-shrink: 0;
   width: 38px;
   height: 38px;
-  border: 1px solid #718154;
-  border-radius: 10px;
-  color: #d9ff8e;
-  background: #232d1c;
+  border: 1px solid rgba(157, 231, 255, 0.4);
+  border-radius: 999px;
+  color: #9de7ff;
+  background: rgba(255, 255, 255, 0.06);
   font:
     0.8rem Consolas,
     monospace;
@@ -450,17 +428,17 @@ legend .participation-step-number {
 .participation-choice-grid,
 .participation-input-grid {
   display: grid;
-  gap: 20px;
+  gap: 12px;
 }
 
 .participation-choice {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px 16px;
+  gap: 0.4rem 12px;
   min-width: 0;
-  padding: 24px;
-  border: 1px solid var(--participation-border);
-  border-radius: 14px;
+  padding: 1rem 1rem 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
   background: var(--participation-surface);
   cursor: pointer;
   transition:
@@ -482,8 +460,8 @@ legend .participation-step-number {
   grid-column: 1;
   grid-row: 1;
   color: var(--participation-text);
-  font-size: 1.4rem;
-  font-weight: 650;
+  font-size: 1.08rem;
+  font-weight: 600;
   line-height: 1.3;
 }
 
@@ -495,8 +473,8 @@ legend .participation-step-number {
 .participation-choice-hint {
   max-width: 40ch;
   color: var(--participation-muted);
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.65;
 }
 
 .participation-choice-state {
@@ -507,14 +485,13 @@ legend .participation-step-number {
 }
 
 .participation-choice:hover {
-  border-color: #9de7ff;
-  background: #1d2835;
+  border-color: rgba(182, 255, 105, 0.32);
+  background: rgba(182, 255, 105, 0.14);
 }
 
 .participation-choice.is-selected {
   border-color: #b6ff69;
-  box-shadow: inset 0 0 0 1px #b6ff69;
-  background: #202a1c;
+  background: rgba(182, 255, 105, 0.14);
 }
 
 .participation-choice.is-selected .participation-choice-state {
@@ -527,8 +504,7 @@ legend .participation-step-number {
 }
 
 .participation-rules,
-.participation-details,
-.participation-interlude {
+.participation-details {
   margin-top: 8px;
   padding-top: 30px;
   border-top: 1px solid var(--participation-border);
@@ -588,10 +564,10 @@ legend .participation-step-number {
 .participation-rules-answer {
   display: grid;
   gap: 12px;
-  padding: 24px;
-  border: 1px solid #52677b;
-  border-radius: 12px;
-  background: #17232d;
+  padding: 1rem 1rem 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background: var(--participation-surface);
 }
 
 .participation-rules-answer h3 {
@@ -605,8 +581,7 @@ legend .participation-step-number {
   line-height: 1.65;
 }
 
-.participation-actions,
-.participation-video-actions {
+.participation-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -624,12 +599,12 @@ legend .participation-step-number {
 }
 
 .participation-form-shell .button-secondary {
-  background: #202a37;
+  background: var(--surface-raised);
   border-color: #78899f;
 }
 
 .participation-form-shell .button-secondary:hover {
-  background: #2a3747;
+  background: var(--surface-hover);
 }
 
 .participation-form-shell .button-primary[aria-pressed='true'] {
@@ -673,7 +648,7 @@ legend .participation-step-number {
   min-height: 52px;
   padding: 14px 16px;
   color: var(--participation-text);
-  background: #101720;
+  background: var(--surface-raised);
   border: 1px solid #74859b;
   font-size: 1rem;
   line-height: 1.6;
@@ -708,7 +683,7 @@ legend .participation-step-number {
   min-height: 48px;
   padding: 18px;
   border: 1px solid var(--participation-border);
-  border-radius: 10px;
+  border-radius: 22px;
   background: var(--participation-surface);
   color: var(--participation-text);
   font-size: 1rem;
@@ -770,14 +745,28 @@ legend .participation-step-number {
   font-size: 1.8rem;
 }
 
+.participation-interlude {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
+
+.participation-interlude[hidden] {
+  display: none;
+}
+
 .participation-interlude-video {
   width: 100%;
   max-width: 640px;
   aspect-ratio: 16 / 9;
   border: 0;
-  border-radius: 12px;
+  border-radius: 22px;
   object-fit: contain;
   background: #000;
+}
+
+.participation-intro > .participation-field-note {
+  margin-top: 1rem;
 }
 
 .participation-error,
@@ -830,7 +819,116 @@ legend .participation-step-number {
   opacity: 0.7;
 }
 
+.participation-page {
+  gap: 24px;
+  padding: 20px 0 36px;
+}
+
+.participation-intro,
+.participation-side-panel,
+.participation-form-shell,
+.participation-archive-notice {
+  padding: 1.15rem;
+}
+
+.participation-date-line {
+  font-size: clamp(2rem, 12cqi, 4rem);
+}
+
+.participation-byos-line {
+  font-size: clamp(2.75rem, 17cqi, 4.5rem);
+}
+
+.participation-title {
+  max-width: none;
+}
+
+.participation-title-tagline,
+.participation-title-subtitle {
+  white-space: normal;
+  letter-spacing: 0.1em;
+}
+
+.participation-title-tagline {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.participation-title-subtitle {
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.participation-description {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.participation-progress {
+  gap: 10px;
+}
+
+.participation-progress li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 0.8rem;
+  font-size: 0.82rem;
+}
+
+.participation-consent {
+  padding: 16px;
+}
+
+.participation-form-shell .field-label {
+  display: block;
+}
+
+.participation-optional {
+  margin: 0;
+  display: block;
+}
+
+.participation-submit-row .button-primary {
+  width: 100%;
+}
+
 @media (min-width: 640px) {
+  .participation-intro,
+  .participation-form-shell {
+    padding: 1.8rem;
+  }
+
+  .participation-date-line {
+    font-size: clamp(2.6rem, 12cqi, 4.8rem);
+  }
+
+  .participation-byos-line {
+    font-size: clamp(3.4rem, 17cqi, 6.8rem);
+  }
+
+  .participation-title-tagline {
+    font-size: clamp(1.08rem, 3.4cqi, 1.34rem);
+  }
+
+  .participation-title-subtitle {
+    font-size: clamp(0.82rem, 2.6cqi, 0.98rem);
+  }
+
+  .participation-progress li {
+    display: flex;
+    gap: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.92rem;
+  }
+
+  .participation-actions .button-primary,
+  .participation-actions .button-secondary,
+  .participation-interlude .button-secondary,
+  .participation-submit-row .button-primary {
+    width: auto;
+  }
+
   .participation-choice-grid,
   .participation-input-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -843,91 +941,8 @@ legend .participation-step-number {
     gap: 36px;
   }
 
-  .participation-hero {
-    grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
-  }
-
   .participation-inline-meta {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 639px) {
-  .participation-page {
-    gap: 24px;
-    padding: 20px 0 36px;
-  }
-
-  .participation-intro,
-  .participation-side-panel,
-  .participation-archive-notice {
-    padding: 1.25rem;
-  }
-
-  .participation-date-line {
-    font-size: clamp(2rem, 12cqi, 4rem);
-  }
-
-  .participation-byos-line {
-    font-size: clamp(2.75rem, 17cqi, 4.5rem);
-  }
-
-  .participation-title {
-    max-width: none;
-  }
-
-  .participation-title-tagline,
-  .participation-title-subtitle {
-    white-space: normal;
-    letter-spacing: 0.1em;
-  }
-
-  .participation-title-tagline {
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-
-  .participation-title-subtitle {
-    font-size: 0.8rem;
-    line-height: 1.6;
-  }
-
-  .participation-description {
-    font-size: 1rem;
-    line-height: 1.8;
-  }
-
-  .participation-progress {
-    gap: 10px;
-  }
-
-  .participation-progress li {
-    display: grid;
-    align-content: start;
-    gap: 6px;
-    font-size: 0.82rem;
-  }
-
-  .participation-choice,
-  .participation-rules-answer {
-    padding: 20px;
-  }
-
-  .participation-consent {
-    padding: 16px;
-  }
-
-  .participation-form-shell .field-label {
-    display: block;
-  }
-
-  .participation-optional {
-    margin: 0;
-    display: block;
-  }
-
-  .participation-submit-row .button-primary {
-    width: 100%;
   }
 }
 

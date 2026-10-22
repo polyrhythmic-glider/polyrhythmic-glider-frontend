@@ -8,30 +8,19 @@
 
   <section class="participation-hero" aria-labelledby="participation-title">
     <div class="glass-panel participation-intro">
-      <p class="participation-kicker">Jam Audio + Video · MUGA, Ferrara</p>
+      <p class="participation-kicker">Jam Audio / Video · MUGA · Ferrara</p>
       <h1 id="participation-title" class="display-font participation-title">
         <time class="participation-date-line" datetime="2026-11-04">{{ eventDateLabel }}</time>
         <span class="participation-title-divider" aria-hidden="true"></span>
-        <span class="participation-byos-line">BYOS! 2.0</span>
+        <span class="sr-only">BYOS! 2.0</span>
+        <span class="participation-byos-line" data-text="BYOS! 2.0" aria-hidden="true"
+          >BYOS! 2.0</span
+        >
         <span class="participation-title-tagline">bring your own synth</span>
-        <span class="participation-title-subtitle">an audio + video jam</span>
+        <span class="participation-title-subtitle">an audio / video jam</span>
       </h1>
-      <p class="participation-description">
-        Una serata, due modi di partecipare. Scegli la jam audio o video, conosci le regole e
-        raccontaci cosa porterai.
-      </p>
+      <p class="participation-field-note">MUGA · Via Zucchini 23a, Ferrara</p>
     </div>
-
-    <aside class="glass-panel participation-side-panel" aria-label="Informazioni sull'evento">
-      <p class="participation-side-kicker">Il prossimo appuntamento</p>
-      <div class="participation-side-block">
-        <h2><time datetime="2026-11-04">4 novembre 2026</time></h2>
-        <p class="participation-location">MUGA · Ferrara</p>
-      </div>
-      <p class="participation-side-note">
-        Synth, visual e sperimentazione. Uno spazio da condividere.
-      </p>
-    </aside>
   </section>
 
   <section
@@ -149,65 +138,32 @@
             </div>
           </fieldset>
 
+          <div class="participation-interlude" [hidden]="rulesChoice() !== false">
+            <video
+              #interludeVideo
+              id="participation-interlude-video"
+              class="participation-interlude-video"
+              src="/assets/video/Shooting%20Stars%20Gandalf.mp4"
+              aria-hidden="true"
+              [autoplay]="rulesChoice() === false"
+              loop
+              playsinline
+              preload="auto"
+              disablepictureinpicture
+              disableremoteplayback
+            ></video>
+            <button
+              id="participation-reread-rules"
+              class="button-secondary"
+              type="button"
+              (click)="answerRules(null)"
+            >
+              Rileggi il regolamento
+            </button>
+          </div>
+
           @if (activeJam(); as jam) {
-            @if (rulesChoice() === false) {
-              <section
-                class="participation-feedback participation-interlude"
-                aria-labelledby="interlude-title"
-              >
-                <p class="participation-kicker">Un piccolo intermezzo</p>
-                <h2 id="interlude-title" tabindex="-1">Shooting Stars Gandalf</h2>
-                <p>
-                  Prima di iscriverti, torna al regolamento e assicurati di aver capito le regole.
-                </p>
-                <video
-                  #interludeVideo
-                  id="participation-interlude-video"
-                  class="participation-interlude-video"
-                  src="/assets/video/Shooting%20Stars%20Gandalf.mp4"
-                  aria-hidden="true"
-                  [autoplay]="!prefersReducedMotion()"
-                  loop
-                  playsinline
-                  preload="metadata"
-                  disablepictureinpicture
-                  disableremoteplayback
-                  (play)="isVideoPlaying.set(true)"
-                  (pause)="isVideoPlaying.set(false)"
-                ></video>
-                <div
-                  class="participation-video-actions"
-                  role="group"
-                  aria-label="Controlli del video"
-                >
-                  <button
-                    class="button-secondary"
-                    type="button"
-                    aria-controls="participation-interlude-video"
-                    (click)="toggleVideoPlayback()"
-                  >
-                    {{ isVideoPlaying() ? 'Metti in pausa il video' : 'Riproduci il video' }}
-                  </button>
-                  <button
-                    class="button-secondary"
-                    type="button"
-                    aria-controls="participation-interlude-video"
-                    [attr.aria-pressed]="isVideoMuted()"
-                    (click)="toggleVideoAudio()"
-                  >
-                    {{ isVideoMuted() ? 'Attiva audio' : 'Disattiva audio' }}
-                  </button>
-                </div>
-                @if (videoPlaybackError()) {
-                  <p role="status">
-                    Il video non è partito. Puoi riprovare o tornare al regolamento.
-                  </p>
-                }
-                <button class="button-primary" type="button" (click)="answerRules(null)">
-                  Rileggi il regolamento
-                </button>
-              </section>
-            } @else {
+            @if (rulesChoice() !== false) {
               <section class="participation-rules" aria-labelledby="rules-title">
                 <div class="participation-section-heading">
                   <span class="participation-step-number" aria-hidden="true">02</span>

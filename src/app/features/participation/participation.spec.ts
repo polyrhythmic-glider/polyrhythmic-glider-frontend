@@ -8,6 +8,8 @@ describe('Participation', () => {
   let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
 
   beforeEach(async () => {
+    vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
+    vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => {});
     await TestBed.configureTestingModule({ imports: [Participation] }).compileComponents();
     fixture = TestBed.createComponent(Participation);
     component = fixture.componentInstance;
@@ -18,6 +20,7 @@ describe('Participation', () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
@@ -49,7 +52,7 @@ describe('Participation', () => {
 
     component.answerRules(null);
     fixture.detectChanges();
-    expect(element.querySelector('video')).toBeNull();
+    expect(element.querySelector<HTMLElement>('.participation-interlude')?.hidden).toBe(true);
     component.answerRules(true);
     fixture.detectChanges();
     expect(element.querySelector('input[name="instrument"]')).not.toBeNull();
@@ -225,7 +228,9 @@ describe('Participation', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(document.activeElement?.id).toBe('registration-title');
-    expect(element.querySelector('[role="status"]')?.textContent).toBe('Iscrizione completata.');
+    expect(element.querySelector('[role="status"]')?.textContent?.trim()).toBe(
+      'Iscrizione completata.',
+    );
   });
 
   it('connects field hints and validation messages to their controls', async () => {
@@ -250,47 +255,46 @@ describe('Participation', () => {
     );
   });
 
-  it('does not autoplay the interlude when reduced motion is requested', () => {
-    component.prefersReducedMotion.set(true);
+  it('preloads the interlude and starts it directly when the rules are not understood', () => {
+    const video = element.querySelector('video')!;
+    const interlude = element.querySelector<HTMLElement>('.participation-interlude')!;
+    expect(video.preload).toBe('auto');
+    expect(video.autoplay).toBe(false);
+    expect(interlude.hidden).toBe(true);
+    expect(video.play).not.toHaveBeenCalled();
+
     component.selectJam('video');
     component.answerRules(false);
     fixture.detectChanges();
-    const video = element.querySelector('video');
-    expect(video?.autoplay).toBe(false);
-    expect(video?.controls).toBe(false);
-    expect(element.querySelector('.participation-video-actions')?.textContent).toContain(
-      'Riproduci il video',
-    );
-    expect(video?.loop).toBe(true);
+
+    expect(element.querySelector('video')).toBe(video);
+    expect(video.play).toHaveBeenCalledOnce();
+    expect(video.autoplay).toBe(true);
+    expect(video.controls).toBe(false);
+    expect(video.loop).toBe(true);
+    expect(interlude.hidden).toBe(false);
+    expect(interlude.querySelectorAll('button').length).toBe(1);
+    expect(interlude.textContent?.trim()).toBe('Rileggi il regolamento');
   });
 
-  it('provides keyboard-operable pause and audio controls for the interlude', async () => {
+  it('focuses the return button and stops the video when returning to the rules', async () => {
     component.selectJam('video');
     component.answerRules(false);
     fixture.detectChanges();
+    await fixture.whenStable();
+
     const video = element.querySelector('video')!;
-    const pause = vi
-      .spyOn(video, 'pause')
-      .mockImplementation(() => video.dispatchEvent(new Event('pause')));
     Object.defineProperty(video, 'paused', { configurable: true, value: false });
-    video.dispatchEvent(new Event('play'));
+    video.currentTime = 12;
+    expect(document.activeElement?.id).toBe('participation-reread-rules');
+    element.querySelector<HTMLButtonElement>('#participation-reread-rules')?.click();
     fixture.detectChanges();
+    await fixture.whenStable();
 
-    const pauseButton = element.querySelector<HTMLButtonElement>(
-      '.participation-video-actions button',
-    );
-    expect(pauseButton?.textContent).toContain('Metti in pausa');
-    pauseButton?.click();
-    fixture.detectChanges();
-    expect(pause).toHaveBeenCalledOnce();
-    expect(pauseButton?.textContent).toContain('Riproduci il video');
-
-    component.toggleVideoAudio();
-    fixture.detectChanges();
-    expect(video.muted).toBe(true);
-    expect(
-      element.querySelector('.participation-video-actions button[aria-pressed="true"]')
-        ?.textContent,
-    ).toContain('Attiva audio');
+    expect(video.pause).toHaveBeenCalledOnce();
+    expect(video.currentTime).toBe(0);
+    expect(video.autoplay).toBe(false);
+    expect(element.querySelector<HTMLElement>('.participation-interlude')?.hidden).toBe(true);
+    expect(document.activeElement?.id).toBe('rules-title');
   });
 });
