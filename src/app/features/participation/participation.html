@@ -38,9 +38,7 @@
   <section
     id="registration"
     class="glass-panel participation-form-shell"
-    [class.has-active-rules]="
-      activeJam() && (rulesChoice() === null || (rulesChoice() === true && detailsStep() < 3))
-    "
+    [class.has-active-rules]="activeJam() && (rulesChoice() !== true || detailsStep() < 3)"
     aria-labelledby="registration-title"
   >
     <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">
@@ -169,14 +167,60 @@
                   }
                 </div>
                 <div class="participation-rule-navigation">
-                  <button
-                    class="button-primary"
-                    type="button"
-                    (click)="hasReadAllRules() ? answerRules() : nextRule()"
-                  >
-                    {{ hasReadAllRules() ? 'Accetto e continuo' : 'Avanti' }}
-                  </button>
+                  @if (rulesQuestionVisible()) {
+                    <p class="participation-field-note">Hai capito le regole?</p>
+                    <div class="participation-input-grid">
+                      <button class="button-secondary" type="button" (click)="answerRules(false)">
+                        No
+                      </button>
+                      <button class="button-primary" type="button" (click)="answerRules(true)">
+                        Sì
+                      </button>
+                    </div>
+                  } @else {
+                    <button
+                      class="button-primary"
+                      type="button"
+                      (click)="hasReadAllRules() ? showRulesQuestion() : nextRule()"
+                    >
+                      {{ hasReadAllRules() ? 'Continua' : 'Avanti' }}
+                    </button>
+                  }
                 </div>
+              </section>
+            }
+
+            @if (rulesChoice() === false) {
+              <section class="participation-details" aria-label="Rileggi il regolamento">
+                <video
+                  #interludeVideo
+                  id="participation-interlude-video"
+                  class="participation-interlude-video"
+                  src="/assets/video/Shooting%20Stars%20Gandalf.mp4"
+                  aria-hidden="true"
+                  autoplay
+                  loop
+                  playsinline
+                  preload="auto"
+                  disablepictureinpicture
+                  disableremoteplayback
+                  style="
+                    width: 100%;
+                    min-height: 0;
+                    flex: 1;
+                    border-radius: 12px;
+                    object-fit: contain;
+                    background: #000;
+                  "
+                ></video>
+                <button
+                  id="participation-reread-rules"
+                  class="button-primary"
+                  type="button"
+                  (click)="rereadRules()"
+                >
+                  Rileggi il regolamento
+                </button>
               </section>
             }
 

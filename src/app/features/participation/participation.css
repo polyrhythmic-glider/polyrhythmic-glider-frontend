@@ -954,6 +954,7 @@
 
 .participation-rule-navigation {
   display: flex;
+  flex-direction: column;
   margin-top: 0.2rem;
 }
 
@@ -1242,8 +1243,7 @@
 
 .has-active-rules .participation-rules-carousel {
   min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
 }
 
 .has-active-rules .participation-rule-card {

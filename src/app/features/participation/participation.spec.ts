@@ -36,7 +36,8 @@ describe('Participation', () => {
     while (!component.hasReadAllRules()) {
       component.nextRule();
     }
-    component.answerRules();
+    component.showRulesQuestion();
+    component.answerRules(true);
   }
 
   function submittedPayload(): URLSearchParams {
@@ -52,7 +53,7 @@ describe('Participation', () => {
       'has-active-rules',
     );
     expect(element.querySelector('input[name="name"]')).toBeNull();
-    component.answerRules();
+    component.answerRules(true);
     expect(component.rulesChoice()).toBeNull();
     confirmRules();
     component.form.patchValue({ name: 'Alex', arrivalTime: '19:30' });
@@ -60,6 +61,29 @@ describe('Participation', () => {
     fixture.detectChanges();
     expect(element.querySelector('input[name="instrument"]')).not.toBeNull();
     expect(element.querySelector('textarea[name="videoEquipment"]')).toBeNull();
+  });
+
+  it('shows Gandalf when the rules are not understood and starts the rules again', () => {
+    vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
+    vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => undefined);
+    component.selectJam('audio');
+    while (!component.hasReadAllRules()) {
+      component.nextRule();
+    }
+
+    component.showRulesQuestion();
+    fixture.detectChanges();
+    expect(element.textContent).toContain('Hai capito le regole?');
+
+    component.answerRules(false);
+    fixture.detectChanges();
+    expect(component.rulesChoice()).toBe(false);
+    expect(element.querySelector('#participation-interlude-video')).not.toBeNull();
+
+    component.rereadRules();
+    fixture.detectChanges();
+    expect(component.rulesChoice()).toBeNull();
+    expect(component.activeRuleIndex()).toBe(0);
   });
 
   it('requires fresh confirmation and removes audio data when switching to video', () => {

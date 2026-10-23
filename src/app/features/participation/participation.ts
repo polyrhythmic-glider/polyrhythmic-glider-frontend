@@ -8,6 +8,7 @@ import {
   computed,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -93,10 +94,12 @@ export class Participation {
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
   private readonly pageScroll = createNoScroll();
+  readonly interludeVideo = viewChild<ElementRef<HTMLVideoElement>>('interludeVideo');
   readonly attemptedSubmit = signal(false);
 
   readonly selectedJam = signal<JamType | null>(null);
   readonly rulesChoice = signal<boolean | null>(null);
+  readonly rulesQuestionVisible = signal(false);
   readonly activeRuleIndex = signal(0);
   readonly detailsStep = signal(1);
   readonly isSubmitting = signal(false);
@@ -114,7 +117,10 @@ export class Participation {
   readonly stepAnnouncement = computed(() => {
     if (this.isSubmitting()) return 'Invio dell’iscrizione in corso.';
     if (this.submissionStatus() === 'success') return 'Iscrizione completata.';
+    if (this.rulesChoice() === false)
+      return 'Rileggi il regolamento per continuare con l’iscrizione.';
     if (this.rulesChoice() === true) return 'Regolamento confermato. Completa i tuoi dati.';
+    if (this.rulesQuestionVisible()) return 'Conferma di aver capito il regolamento.';
     return this.activeJam()
       ? `${this.activeJam()?.label} selezionata. Leggi il regolamento qui sotto.`
       : '';
@@ -179,10 +185,12 @@ export class Participation {
 
     this.selectedJam.set(jam);
     this.rulesChoice.set(null);
+    this.rulesQuestionVisible.set(false);
     this.activeRuleIndex.set(0);
     this.detailsStep.set(1);
     this.submissionStatus.set('idle');
     this.attemptedSubmit.set(false);
+    this.stopInterlude();
 
     const { instrument, effectDetails, videoEquipment } = this.form.controls;
     for (const control of [instrument, effectDetails, videoEquipment]) {
@@ -205,20 +213,47 @@ export class Participation {
 
     this.selectedJam.set(null);
     this.rulesChoice.set(null);
+    this.rulesQuestionVisible.set(false);
     this.activeRuleIndex.set(0);
     this.detailsStep.set(1);
     this.submissionStatus.set('idle');
     this.attemptedSubmit.set(false);
+    this.stopInterlude();
   }
 
-  answerRules(): void {
+  showRulesQuestion(): void {
     if (this.isSubmitting() || !this.hasReadAllRules()) {
       return;
     }
 
-    this.rulesChoice.set(true);
+    this.rulesQuestionVisible.set(true);
+  }
+
+  answerRules(understood: boolean): void {
+    if (this.isSubmitting() || !this.hasReadAllRules() || !this.rulesQuestionVisible()) {
+      return;
+    }
+
+    this.rulesQuestionVisible.set(false);
+    this.rulesChoice.set(understood);
     this.detailsStep.set(1);
     this.submissionStatus.set('idle');
+
+    if (!understood) {
+      this.playInterlude();
+      this.focusAfterRender('#participation-reread-rules');
+    }
+  }
+
+  rereadRules(): void {
+    if (this.isSubmitting()) {
+      return;
+    }
+
+    this.stopInterlude();
+    this.rulesChoice.set(null);
+    this.rulesQuestionVisible.set(false);
+    this.activeRuleIndex.set(0);
   }
 
   nextRule(): void {
@@ -332,5 +367,24 @@ export class Participation {
       },
       { injector: this.injector },
     );
+  }
+
+  private playInterlude(): void {
+    afterNextRender(
+      () => {
+        const video = this.interludeVideo()?.nativeElement;
+        if (!video) return;
+        video.currentTime = 0;
+        void video.play().catch(() => undefined);
+      },
+      { injector: this.injector },
+    );
+  }
+
+  private stopInterlude(): void {
+    const video = this.interludeVideo()?.nativeElement;
+    if (!video) return;
+    video.pause();
+    video.currentTime = 0;
   }
 }
