@@ -38,7 +38,9 @@
   <section
     id="registration"
     class="glass-panel participation-form-shell"
-    [class.has-active-rules]="activeJam() && rulesChoice() === null"
+    [class.has-active-rules]="
+      activeJam() && (rulesChoice() === null || (rulesChoice() === true && detailsStep() < 3))
+    "
     aria-labelledby="registration-title"
   >
     <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">

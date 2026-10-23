@@ -1,6 +1,7 @@
 :host {
   display: block;
   position: relative;
+  touch-action: manipulation;
   --participation-text: #f3f6fb;
   --participation-muted: #b9c5d5;
   --participation-accent: #38bdf8;
@@ -446,7 +447,7 @@
 
 .participation-section-heading {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
 }
 
@@ -1219,7 +1220,6 @@
 .participation-form-shell.has-active-rules {
   align-self: stretch;
   grid-template-rows: auto minmax(0, 1fr);
-  overflow: hidden;
 }
 
 .has-active-rules .participation-form,
@@ -1240,10 +1240,6 @@
   align-content: stretch;
 }
 
-.has-active-rules .participation-section-heading {
-  align-items: center;
-}
-
 .has-active-rules .participation-rules-carousel {
   min-height: 0;
   overflow-y: auto;
@@ -1258,4 +1254,14 @@
 .has-active-rules .participation-rule-navigation {
   margin: 0;
   padding-top: clamp(0.5rem, 1.4vh, 0.9rem);
+}
+
+.has-active-rules .participation-details {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.has-active-rules .participation-details-next {
+  margin-top: auto;
 }

@@ -289,4 +289,25 @@ describe('Participation', () => {
       'Invia iscrizione',
     );
   });
+
+  it('keeps continuation steps in the fixed-action stage', () => {
+    component.selectJam('audio');
+    confirmRules();
+    fixture.detectChanges();
+
+    expect(element.querySelector('.participation-form-shell')?.classList).toContain(
+      'has-active-rules',
+    );
+
+    fillCommonFields();
+    component.nextDetails();
+    fixture.detectChanges();
+    component.form.patchValue({ instrument: 'Drum machine' });
+    component.nextDetails();
+    fixture.detectChanges();
+
+    expect(element.querySelector('.participation-form-shell')?.classList).not.toContain(
+      'has-active-rules',
+    );
+  });
 });
