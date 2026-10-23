@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { createNoScroll } from '@fluejs/noscroll';
 
 type JamType = 'audio' | 'video';
 
@@ -91,6 +92,7 @@ export class Participation {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly pageScroll = createNoScroll();
   readonly attemptedSubmit = signal(false);
 
   readonly selectedJam = signal<JamType | null>(null);
@@ -125,6 +127,22 @@ export class Participation {
     videoEquipment: [{ value: '', disabled: true }],
     consent: [false, [Validators.requiredTrue]],
   });
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.pageScroll.enablePageScroll());
+
+    afterNextRender(
+      () => {
+        if (this.destroyRef.destroyed) {
+          return;
+        }
+
+        this.pageScroll.disablePageScroll();
+      },
+      { injector: this.injector },
+    );
+  }
+
   private readonly formEvents = toSignal(this.form.events);
   readonly validationErrors = computed(() => {
     this.formEvents();

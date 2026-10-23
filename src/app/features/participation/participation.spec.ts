@@ -47,7 +47,10 @@ describe('Participation', () => {
     expect(element.querySelector('input[name="name"]')).toBeNull();
     component.selectJam('audio');
     fixture.detectChanges();
-    expect(element.textContent).toContain('Regolamento Jam Audio');
+    expect(element.querySelector('.participation-rules')).not.toBeNull();
+    expect(element.querySelector('.participation-form-shell')?.classList).toContain(
+      'has-active-rules',
+    );
     expect(element.querySelector('input[name="name"]')).toBeNull();
     component.answerRules();
     expect(component.rulesChoice()).toBeNull();
