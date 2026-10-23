@@ -153,9 +153,6 @@
                 aria-label="Regole della jam"
               >
                 <div class="participation-section-heading">
-                  <div>
-                    <p class="participation-kicker">Prima di cominciare</p>
-                  </div>
                   <button class="participation-change-jam" type="button" (click)="resetJam()">
                     Cambia jam
                   </button>
@@ -189,11 +186,6 @@
                 class="participation-details"
                 aria-label="Dati di iscrizione"
               >
-                <div class="participation-section-heading">
-                  <div>
-                    <p class="participation-kicker">Ultimo passaggio</p>
-                  </div>
-                </div>
                 @if (detailsStep() === 1) {
                   <p class="participation-field-note">Prima: dicci chi sei e quando arrivi.</p>
                   <div class="participation-input-grid">
