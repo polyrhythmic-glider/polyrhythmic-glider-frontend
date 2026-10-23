@@ -169,7 +169,10 @@
                 <div class="participation-rule-navigation">
                   @if (rulesQuestionVisible()) {
                     <p class="participation-field-note">Hai capito le regole?</p>
-                    <div class="participation-input-grid">
+                    <div
+                      class="participation-input-grid"
+                      style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem"
+                    >
                       <button class="button-secondary" type="button" (click)="answerRules(false)">
                         No
                       </button>
