@@ -229,6 +229,7 @@ export class Background implements AfterViewInit, OnDestroy {
 
     this.updateAudioData();
 
+    // Keep the page color uniform with Safari's toolbar areas.
     this.ctx.clearRect(0, 0, width, height);
 
     const viewportScale = Math.min(1, Math.max(0.7, width / 1024));
@@ -236,10 +237,6 @@ export class Background implements AfterViewInit, OnDestroy {
     const pointRadius = 0.9 + this.lowEnergy * 1.5;
     const lineDistance = 100 * viewportScale + this.midEnergy * 160 * viewportScale;
     const lineOpacityBoost = 0.2 * viewportScale + this.midEnergy * 0.5 * viewportScale;
-    const glowOpacity = 0.02 * viewportScale + this.energy * 0.1 * viewportScale;
-
-    this.ctx.fillStyle = `rgba(255,255,255,${glowOpacity})`;
-    this.ctx.fillRect(0, 0, width, height);
 
     for (const p of this.particles) {
       p.vx = p.baseVx * speedBoost + (Math.random() - 0.5) * this.highEnergy * 0.5;
